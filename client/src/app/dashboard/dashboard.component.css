@@ -1,0 +1,25 @@
+.dashboardPage{
+  width: 90%;
+  margin:auto;
+}
+table {
+  width:100%;
+  }
+th.mat-sort-header-sorted {
+    color: grey;
+}
+.mat-row:hover {
+  background-color:#F2F5F8;
+}
+.float-r{
+  float:right
+}
+.center{
+  margin: auto;
+}
+.noIssue{
+  display: block;
+  width: 200px;
+  margin: auto;
+  font-size:1.7rem;
+}

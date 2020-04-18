@@ -1,0 +1,13 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark flex-class">
+  <div>
+    <span class="material-icons">bug_report </span>
+    <a class="navbar-brand" href="/">Issue Tracking App</a> 
+  </div>
+  <div>
+    <span class="material-icons" *ngIf="userName">face </span> <span class="user" *ngIf="userName">Hey, {{userName}}</span>
+    <span class="material-icons">notifications </span>
+    <button mat-raised-button class="btn btn-secondary" (click)="logout()">Logout</button>
+  </div>
+</nav>
+<router-outlet></router-outlet>
+

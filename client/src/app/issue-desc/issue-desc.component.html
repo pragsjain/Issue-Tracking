@@ -1,0 +1,162 @@
+
+  <div *ngIf="!isIssue && !isCreateNewIssue" class="noIssue">No Issue Found</div>
+  <div class="issue-desc-page" 
+  [ngClass]="{'showFlex':isIssue || isCreateNewIssue,'hide':!isIssue && !isCreateNewIssue}">
+
+    <mat-card  class="create-form" [ngClass]="{'show':isEdit || isCreateNewIssue,'hide':!isEdit && !isCreateNewIssue}">
+      <form [formGroup]="createForm" >
+      <section class="mat-typography">      
+        <h3 *ngIf="issueId==''">Create a new Issue</h3> 
+        <h3 *ngIf="issueId!==''">Edit Issue</h3> 
+        <div class="flex-space-between">
+            <span *ngIf="issueId!==''&& issue?.created" class="created-class">
+              Created On :<i> {{issue?.created | date}}</i> &nbsp;
+            </span>
+            <span *ngIf="issueId==''" class="created-class">
+                Create On :<i> {{date| date}}</i> &nbsp;
+            </span>
+            <div>
+              <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true" *ngIf="!isWatcher && isEdit">
+                    <i class="material-icons">visibility </i> Watch 
+              </button>  &nbsp;
+              <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=false" *ngIf="isWatcher && isEdit">
+                    <i class="material-icons">visibility_off </i> Unwatch
+              </button>  &nbsp;
+              <button mat-raised-button class="btn btn-secondary" routerLink="/dashboard">
+                <i class="material-icons">undo </i>Dashboard</button> &nbsp;
+              <!-- disable if form is pristine or invalid or if any file is not added or removed -->
+              <button type="submit" (click)="saveClicked()" 
+              [disabled]="(createForm.pristine && !isAttachmentChanged) ||createForm.invalid " 
+              mat-raised-button class="btn btn-secondary" >
+              <i class="material-icons">backup </i> Save and Upload</button> 
+            </div>
+          </div>
+      </section>
+      <mat-divider></mat-divider>
+      <br>
+      
+        <mat-form-field class="field-full-width">
+          <input matInput placeholder ="Title*" formControlName="title" #title>
+        </mat-form-field>
+          <quill-editor 
+          [styles]="editorStyle" 
+          placeholder="Describe the issue here .."
+          formControlName="description"
+           #description
+          ></quill-editor>
+        <!-- <div [innerHTML]="description"></div> -->
+        <mat-form-field class="field-full-width">
+            <mat-label>Status*</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="field-full-width">
+            <mat-label>Assignee*</mat-label>
+            <mat-select formControlName="assignee">
+                <mat-option *ngFor="let user of userList" [value]="user.userName">
+                  {{user.firstName}} {{user.lastName}}<i> ({{user.userName}})</i></mat-option>
+              </mat-select>
+        </mat-form-field>
+        <mat-form-field class="field-full-width">
+            <mat-label>Reporter*</mat-label>
+            <mat-select formControlName="reporter">
+                <mat-option *ngFor="let user of userList" [value]="user.userName">
+                    {{user.firstName}} {{user.lastName}}<i> ({{user.userName}})</i></mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field class="field-full-width">
+          <input matInput placeholder ="Assignee*" formControlName="assignee" #assignee> 
+        </mat-form-field>
+        <mat-form-field class="field-full-width">
+          <input matInput placeholder ="Reporter*" formControlName="reporter" #reporter>
+        </mat-form-field> -->
+          <input 
+          style="display:none"
+          type="file"
+          (change)="onFileSelected($event)"
+           #fileInput
+          >
+          <button type="button" mat-raised-button class="btn btn-primary" (click)="fileInput.click()">
+              <i class="material-icons">attach_file </i>Attach</button>
+          <br>
+          <div *ngIf="this.filesArray">  
+            <ul *ngFor="let element of this.filesArray; let i = index">
+              <li><a href="{{element.url}}" target="_blank">{{element.name}}</a> &nbsp;
+                <i class="material-icons close-class" (click)="removeFile(i)">cancel </i></li>
+            </ul>
+          </div>
+          
+      </form>
+    </mat-card>
+  
+
+    <mat-card  class="issue-desc" [ngClass]="{'showBlock':!isEdit && !isCreateNewIssue ,'hide':isEdit||isCreateNewIssue}">
+      <section class="mat-typography">
+        <h3 >Issue Desciption</h3> 
+        <div class="flex-space-between">
+          <span class="created-class">Created On :<i> {{issue?.created | date }}</i> &nbsp;
+          </span>
+          <div>
+            <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true;addWatcher()" *ngIf="!isWatcher">
+                  <i class="material-icons">visibility </i> Watch
+            </button> &nbsp;
+            <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=false;removeWatcher()" *ngIf="isWatcher">
+                  <i class="material-icons">visibility_off </i> Unwatch
+            </button> &nbsp;
+            <button mat-raised-button class="btn btn-secondary" routerLink="/dashboard">
+              <i class="material-icons">undo </i>Dashboard</button> &nbsp;
+            <button mat-raised-button class="btn btn-secondary" (click)="isEdit=true">
+                <i class="material-icons">edit </i> Edit
+            </button> 
+          </div>
+        </div>
+      </section>
+      <mat-divider></mat-divider>
+      <br>
+      <h4>{{issue?.title}}</h4>
+      <div [innerHTML]="issue?.description"></div>
+      <p>Assignee :<span class="descValue-class"> {{issue?.assigneeFullName}}</span></p>
+      <p>Reporter :<span class="descValue-class"> {{issue?.resporterFullName}}</span></p>
+      <p>Status : <span class="descValue-class"> {{issue?.status}}</span></p>
+      <div *ngIf="this.filesArray">  
+        <p>Attachments :</p>
+          <ul *ngFor="let element of this.filesArray; let i = index">
+            <li><a href="{{element.url}}" target="_blank">{{element.name}}</a> &nbsp;
+          </ul>
+      </div>
+      <br>
+    </mat-card>
+
+    <mat-card class="chat" #scrollMe [scrollTop]="scrolltop" [ngClass]="{'showBlock':isIssue ,'hide':!isIssue}">
+      <section class="mat-typography">
+        <h3>Comment Section</h3> 
+      </section>
+        <mat-divider></mat-divider>
+        <br>
+    <div  class="chat-history" *ngIf="comments">
+      <ul>
+        <li class="clearfix" *ngFor="let comment of comments">
+          <div class="message-data">
+            <span class="message-data-time">{{comment?.created | date}}</span> &nbsp; &nbsp;
+            <span class="message-data-name floatLeft" *ngIf="comment.senderId != userInfo.userId">
+               {{ comment?.senderName }}</span>
+            <span class="message-data-name" *ngIf="comment.senderId == userInfo.userId">{{ comment?.senderName }}</span>
+          </div>
+          <div class="message my-message" >
+            {{comment?.message}}
+          </div>
+        </li>
+      </ul>
+     
+        <mat-form-field class="add-comment">
+            <mat-label>Leave a comment</mat-label>
+            <textarea matInput placeholder="Ex. I have completed this..."></textarea>
+        </mat-form-field>
+
+    </div>
+  </mat-card>
+
+</div> 
+
+ 

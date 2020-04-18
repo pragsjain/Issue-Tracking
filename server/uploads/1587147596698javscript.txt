@@ -1,0 +1,8 @@
+javascript:
+sort array of objects:
+https://stackoverflow.com/questions/979256/sorting-an-array-of-objects-by-property-values?rq=1
+
+https://jsbin.com/widoxopami/edit?html,js,output
+
+https://www.pluralsight.com/guides/introduction-to-asynchronous-javascript
+

@@ -1,0 +1,125 @@
+li{
+  list-style: none;
+}
+.issue-desc-page{
+    display: flex;
+    justify-content: space-between;
+    font-size:0.7rem;
+}
+.showFlex{
+  display: flex
+}
+.hide{
+  display: none
+}
+.showBlock{
+  display: block;
+}
+.noIssue{
+  display: block;
+  width: 200px;
+  margin: auto;
+  font-size:1.7rem;
+}
+.create-form,.chat,.issue-desc{
+  min-width: 150px;
+  width: 48%;
+  background: #F2F5F8;
+}
+ @media only screen and (max-width: 600px) {
+  .issue-desc-page{
+    display: block;
+  }
+  .create-form,.chat,.issue-desc{
+    width: 100%;
+  } 
+ }
+
+/* for attachment list elements */
+div ul {
+  padding-inline-start: 10px;
+  margin-bottom: 0px;
+  margin-top: 3px;
+}
+
+.field-full-width{
+    width: 100%;
+}
+.chat {
+    background: #F2F5F8;
+    color: #434651;
+  }
+.chat .chat-history {
+    padding: 2em 2em 1.42em;
+    border-bottom: 0.15em solid white;
+    overflow-y: scroll;
+  }
+  
+  .chat .chat-history .message-data {
+    margin-bottom: 1em;
+  }
+  
+  .chat .chat-history .message-data-time {
+    color: #a8aab1;
+    padding-left: 0.4em;
+  }
+  
+  .chat .chat-history .message {
+    color: white;
+    padding: 0.5em 1.42em;
+    line-height: 1.9em;
+    font-size: 1.1em;
+    border-radius: 7px;
+    margin-bottom: 2em;
+    width: 90%;
+    position: relative;
+  }
+  
+  .chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #86BB71;
+    border-width: 0.8em;
+    margin-left: -0.8em;
+  }
+  
+  .chat .chat-history .my-message {
+    background: #86BB71;
+  }
+  .add-comment{
+    width: 90%;
+    bottom:1%;
+    margin: auto;
+    /* bottom: 0px; */
+    left: 3%;
+    /* position: absolute; */
+  }
+  .material-icons.close-class {
+     font-size: 0.7rem;
+     position: relative;
+     bottom: -3px;
+  }
+  span.created-class{
+    color: #a8aab1;
+  }
+  span.descValue-class{
+    color: #a8aab1;
+    font-style: oblique
+  }
+  .btn i.material-icons{
+    font-size: 0.7rem;
+    position: relative;
+    top: 2px;
+  }
+  .flex-space-between{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  

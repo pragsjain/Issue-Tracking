@@ -1,0 +1,7 @@
+custom validation error:
+https://dzone.com/articles/custom-validators-in-template-driven-angular-2-for
+https://dzone.com/articles/how-to-create-custom-validators-in-angular
+https://angular.io/guide/form-validation
+
+template form register 
+https://jasonwatmore.com/post/2018/11/10/angular-7-template-driven-forms-validation-example
