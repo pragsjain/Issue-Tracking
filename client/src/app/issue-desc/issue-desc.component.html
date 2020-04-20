@@ -6,15 +6,9 @@
     <mat-card  class="create-form" [ngClass]="{'show':isEdit || isCreateNewIssue,'hide':!isEdit && !isCreateNewIssue}">
       <form [formGroup]="createForm" >
       <section class="mat-typography">      
-        <h3 *ngIf="issueId==''">Create a new Issue</h3> 
-        <h3 *ngIf="issueId!==''">Edit Issue</h3> 
         <div class="flex-space-between">
-            <span *ngIf="issueId!==''&& issue?.created" class="created-class">
-              Created On :<i> {{issue?.created | date}}</i> &nbsp;
-            </span>
-            <span *ngIf="issueId==''" class="created-class">
-                Create On :<i> {{date| date}}</i> &nbsp;
-            </span>
+          <h3 *ngIf="issueId==''">Create a new Issue</h3> 
+          <h3 *ngIf="issueId!==''">Edit Issue</h3> 
             <div>
               <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true" *ngIf="!isWatcher && isEdit">
                     <i class="material-icons">visibility </i> Watch 
@@ -26,15 +20,20 @@
                 <i class="material-icons">undo </i>Dashboard</button> &nbsp;
               <!-- disable if form is pristine or invalid or if any file is not added or removed -->
               <button type="submit" (click)="saveClicked()" 
-              [disabled]="(createForm.pristine && !isAttachmentChanged) ||createForm.invalid " 
+              [disabled]="(createForm.pristine) ||createForm.invalid " 
               mat-raised-button class="btn btn-secondary" >
-              <i class="material-icons">backup </i> Save and Upload</button> 
+              <i class="material-icons">backup </i> Save </button> 
             </div>
           </div>
-      </section>
-      <mat-divider></mat-divider>
+        </section>
+        <mat-divider></mat-divider>
       <br>
-      
+      <span *ngIf="issueId!==''&& issue?.created" class="created-class">
+        Created On :<i> {{issue?.created | date}}</i> &nbsp;
+      </span>
+      <span *ngIf="issueId==''" class="created-class">
+          Create On :<i> {{date| date}}</i> &nbsp;
+      </span>
         <mat-form-field class="field-full-width">
           <input matInput placeholder ="Title*" formControlName="title" #title>
         </mat-form-field>
@@ -77,13 +76,13 @@
           (change)="onFileSelected($event)"
            #fileInput
           >
-          <button type="button" mat-raised-button class="btn btn-primary" (click)="fileInput.click()">
-              <i class="material-icons">attach_file </i>Attach</button>
+          <button type="button" mat-raised-button class="btn btn-primary" (click)="fileInput.click()" *ngIf='issueId'>
+              <i class="material-icons">attach_file </i>Attach and Upload</button>
           <br>
           <div *ngIf="this.filesArray">  
             <ul *ngFor="let element of this.filesArray; let i = index">
-              <li><a href="{{element.url}}" target="_blank">{{element.name}}</a> &nbsp;
-                <i class="material-icons close-class" (click)="removeFile(i)">cancel </i></li>
+              <li><a href="{{element.url}}" target="_blank">{{element.file}}</a> &nbsp;
+                <i class="material-icons close-class" (click)="removeFile(element.fileId)">cancel </i></li>
             </ul>
           </div>
           
@@ -93,10 +92,8 @@
 
     <mat-card  class="issue-desc" [ngClass]="{'showBlock':!isEdit && !isCreateNewIssue ,'hide':isEdit||isCreateNewIssue}">
       <section class="mat-typography">
-        <h3 >Issue Desciption</h3> 
         <div class="flex-space-between">
-          <span class="created-class">Created On :<i> {{issue?.created | date }}</i> &nbsp;
-          </span>
+          <h3 >Issue Desciption</h3> 
           <div>
             <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true;addWatcher()" *ngIf="!isWatcher">
                   <i class="material-icons">visibility </i> Watch
@@ -114,15 +111,17 @@
       </section>
       <mat-divider></mat-divider>
       <br>
+      <span class="created-class">Created On :<i> {{issue?.created | date }}</i> &nbsp;
+      </span>
       <h4>{{issue?.title}}</h4>
       <div [innerHTML]="issue?.description"></div>
       <p>Assignee :<span class="descValue-class"> {{issue?.assigneeFullName}}</span></p>
       <p>Reporter :<span class="descValue-class"> {{issue?.resporterFullName}}</span></p>
       <p>Status : <span class="descValue-class"> {{issue?.status}}</span></p>
-      <div *ngIf="this.filesArray">  
+      <div *ngIf="this.filesArray?.length>0">  
         <p>Attachments :</p>
           <ul *ngFor="let element of this.filesArray; let i = index">
-            <li><a href="{{element.url}}" target="_blank">{{element.name}}</a> &nbsp;
+            <li><a href="{{element.url}}" target="_blank">{{element.file}}</a> &nbsp;
           </ul>
       </div>
       <br>
@@ -134,26 +133,31 @@
       </section>
         <mat-divider></mat-divider>
         <br>
+      <form [formGroup]="commentForm" class="add-comment" >
+        <mat-form-field class="field-full-width">
+              <mat-label>Leave a comment</mat-label>
+              <textarea matInput placeholder="Ex. I have completed this..."  formControlName="comment"
+              #comment></textarea>
+              <button (click)="sendComment()" 
+              [disabled]="commentForm.pristine||commentForm.invalid" 
+              mat-raised-button class="btn btn-secondary send-btn" >
+              <i class="material-icons">send </i> </button> 
+        </mat-form-field>
+      </form>
+            
     <div  class="chat-history" *ngIf="comments">
       <ul>
         <li class="clearfix" *ngFor="let comment of comments">
           <div class="message-data">
-            <span class="message-data-time">{{comment?.created | date}}</span> &nbsp; &nbsp;
-            <span class="message-data-name floatLeft" *ngIf="comment.senderId != userInfo.userId">
-               {{ comment?.senderName }}</span>
-            <span class="message-data-name" *ngIf="comment.senderId == userInfo.userId">{{ comment?.senderName }}</span>
+            <span class="message-data-name floatLeft" *ngIf="comment.userName != user?.userName">
+               {{ comment?.userFullName }}</span>
+            <span class="message-data-name" *ngIf="comment.userName == user?.userName">{{ comment?.userFullName }}</span>
           </div>
           <div class="message my-message" >
             {{comment?.message}}
           </div>
         </li>
       </ul>
-     
-        <mat-form-field class="add-comment">
-            <mat-label>Leave a comment</mat-label>
-            <textarea matInput placeholder="Ex. I have completed this..."></textarea>
-        </mat-form-field>
-
     </div>
   </mat-card>
 

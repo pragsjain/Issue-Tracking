@@ -14,40 +14,20 @@ export class IssueDescComponent implements OnInit {
   issueId='';
   issue;
   createForm: FormGroup;
+  commentForm: FormGroup;
   filesArray: File[] =[]; 
   statusList :String[] = ['In Progress', 'Done', 'Not picked'];
   editorStyle={height:'150px',background: '#fff'}
   date=new Date();
-  isAttachmentChanged=false;
   isCreateNewIssue=true;
   isIssue=false;
   isEdit=false;
   isWatcher=false;
   isUserList=false;
   userList=[];
-  comments=[
-    {
-      senderId:'1',
-      message:'message1',
-      createdOn:this.date,
-      senderName:'Pragati'
-    },
-    {
-      senderId:'2',
-      message:'message2',
-      createdOn:this.date,
-      senderName:'Garav'
-    },
-    {
-      senderId:'3',
-      message:'message3',
-      createdOn:this.date,
-      senderName:'Dhyan'
-    }
-  ]
-  userInfo= {
-    userId:1
-  }
+  user;
+  comment;
+  comments;
   @ViewChild('scrollMe', { read: ElementRef }) 
   scrollMe: ElementRef;
   scrolltop:number = null
@@ -58,6 +38,7 @@ export class IssueDescComponent implements OnInit {
   }
   
     ngOnInit(): void {
+      this.user=this.appService.getUserInfoFromLocalstorage()
       this.route.params.subscribe(params =>{
         console.log('params.issueId->',params.issueId);
         if(params.issueId!==''){
@@ -90,7 +71,7 @@ export class IssueDescComponent implements OnInit {
           if(this.issueId){
             this.issue.assigneeFullName= this.getFullName(this.issue.assignee,this.userList)
             this.issue.resporterFullName= this.getFullName(this.issue.reporter,this.userList)
-            let userName= this.appService.getUserInfoFromLocalstorage().userName;
+            let userName= this.user.userName;
             this.isWatcher=this.issue.watchers.indexOf(userName)==-1?false:true;
           }
         }
@@ -101,7 +82,15 @@ export class IssueDescComponent implements OnInit {
         },(error)=>{
           console.log('error',error);
         })
-    
+
+      if(this.issueId){
+      //get all Comments
+      this.getCommentbyIssueId(this.issueId);
+
+      //get all Files
+      this.getFilebyIssueId(this.issueId);
+      }
+
   }
 
 
@@ -115,8 +104,9 @@ export class IssueDescComponent implements OnInit {
      reporter:['',Validators.required],
      watchers:[[]],
      created:[this.date],
-     comments:[[]],
-     files:File
+    })
+    this.commentForm = this.fb.group({
+      comment:['',Validators.required]
     })
    }
 
@@ -129,8 +119,6 @@ export class IssueDescComponent implements OnInit {
 
    setFormValue(res){
     this.issue=res;
-    this.filesArray=this.appService.getFilesArray(this.issue.files);
-    this.scrolltop = this.scrollMe.nativeElement.scrollHeight
     console.log('this.filesArray->',this.filesArray);
       this.createForm.get('title').setValue(this.issue.title);
       this.createForm.get('description').setValue(this.issue.description);
@@ -143,12 +131,10 @@ export class IssueDescComponent implements OnInit {
       }else{
         this.createForm.get('created').setValue(this.issue.created);
       }
-      this.createForm.get('comments').setValue(this.issue.comments);
    }
 
    createFormData(){
     console.log(this.createForm.value)
-    console.log('FilesArray->',this.filesArray);
      let issue=this.createForm.value;
      var formData = new FormData();
       if(this.issueId)
@@ -159,15 +145,7 @@ export class IssueDescComponent implements OnInit {
       formData.append('assignee',issue.assignee)
       formData.append('reporter',issue.reporter)
       formData.append('created',issue.created)
-      if(this.filesArray.length>0){
-      this.filesArray.forEach(element => {
-        formData.append('files',element, element.name);
-      });
-      }else{
-        formData.append('files','');
-      }
-     
-    return formData;
+     return formData;
      //you cant console.log formdata directly
       console.log(formData.get('title'));
    }
@@ -178,6 +156,7 @@ export class IssueDescComponent implements OnInit {
     if(this.issueId==''){
       this.appService.createIssue(formData).subscribe((res)=>{
         console.log(res);
+        this.router.navigate(['/dashboard']);
       })
     }else{
       this.editIssue(formData)
@@ -195,48 +174,101 @@ export class IssueDescComponent implements OnInit {
   }
 
   onFileSelected(event) {
-    this.isAttachmentChanged=true;
-    this.filesArray.push(<File>event.target.files[0]);
+    var formData = new FormData();
+    let element=<File>event.target.files[0]
+    formData.append('issueId',this.issueId);
+    formData.append('userName',this.user.userName);
+    formData.append('userFullName',this.user.firstName+" "+this.user.lastName);
+    formData.append('url',"");
+    formData.append('file',element, element.name);
+    this.appService.createFile(formData).subscribe((res)=>{
+      if(!res.error){
+        console.log(res.message);
+        this.getFilebyIssueId(this.issueId);
+      }
+      else{
+        console.log(res.message);
+      }
+    });
   }
-
-  removeFile(i){
-    this.isAttachmentChanged=true;
-    this.filesArray.splice(i, 1);
+  
+  removeFile(fileId){
+    this.appService.deleteFile(fileId).subscribe((res)=>{
+      if(!res.error){
+        console.log(res.message);
+        this.getFilebyIssueId(this.issueId);
+      }
+      else{
+        console.log(res.message);
+      }
+    })
   }
 
   addWatcher(){
     var formData = new FormData();
-    let userName= this.appService.getUserInfoFromLocalstorage().userName;
+    let userName= this.user.userName;
     console.log(this.issue.watchers);
     if(this.issue.watchers.indexOf(userName)==-1)
     this.issue.watchers.push(userName);
     formData.append('watchers',this.issue.watchers);
     formData.append('issueId',this.issue.issueId);
-    if(this.filesArray.length>0){
-      this.filesArray.forEach(element => {
-        formData.append('files',element, element.name);
-      });
-    }else{
-        formData.append('files','');
-    }
     this.editIssue(formData);
    }
 
    removeWatcher(){
     var formData = new FormData();
-    let userName= this.appService.getUserInfoFromLocalstorage().userName;
+    let userName= this.user.userName;
     var filtered = this.issue.watchers.filter(function(value){ return value == userName});
     formData.append('watchers',filtered);
     formData.append('issueId',this.issue.issueId);
-    if(this.filesArray.length>0){
-      this.filesArray.forEach(element => {
-        formData.append('files',element, element.name);
-      });
-    }else{
-        formData.append('files','');
-    }
     this.editIssue(formData);
    }
 
+   sendComment(){
+    var formData={}
+    formData['issueId']=this.issue.issueId;
+    formData['userName']=this.user.userName;
+    formData['userFullName']=this.user.firstName+" "+this.user.lastName;
+    formData['message']=this.commentForm.value.comment;
+
+    this.appService.createComment(formData).subscribe((res)=>{
+      console.log(res);
+      if(!res.error)
+      this.getCommentbyIssueId(this.issueId);
+      else{
+        console.log(res.message);
+      }
+    })
+
+      //reset form
+      this.commentForm = this.fb.group({
+        comment:['',Validators.required]
+      })
+  }
+
+getCommentbyIssueId(issueId){
+  this.appService.getCommentbyIssueId(issueId).subscribe((res)=>{
+    console.log(res);
+    this.scrolltop = this.scrollMe.nativeElement.scrollHeight
+    if(!res.error){
+    this.comments=res.data
+    }
+    else{
+      console.log(res.message);
+    }
+  })
+}
+
+getFilebyIssueId(issueId){
+  this.appService.getFilebyIssueId(issueId).subscribe((res)=>{
+    console.log('filesArray',res);
+    if(!res.error){
+    this.filesArray=res.data
+    }
+    else{
+      console.log(res.message);
+    }
+  })
+}
 
 }

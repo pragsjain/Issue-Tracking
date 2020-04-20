@@ -21,12 +21,20 @@ li{
   margin: auto;
   font-size:1.7rem;
 }
-.create-form,.chat,.issue-desc{
+.create-form,.issue-desc{
   min-width: 150px;
   width: 48%;
   background: #F2F5F8;
+  min-height: 90vh;
+  height: 100%
 }
- @media only screen and (max-width: 600px) {
+.chat{
+  min-width: 150px;
+  width: 48%;
+  background: #F2F5F8;
+  height: 90vh;
+}
+ @media only screen and (max-width: 650px) {
   .issue-desc-page{
     display: block;
   }
@@ -53,6 +61,7 @@ div ul {
     padding: 2em 2em 1.42em;
     border-bottom: 0.15em solid white;
     overflow-y: scroll;
+    height: 78%;
   }
   
   .chat .chat-history .message-data {
@@ -93,12 +102,9 @@ div ul {
     background: #86BB71;
   }
   .add-comment{
-    width: 90%;
-    bottom:1%;
+    width: 88%;
     margin: auto;
-    /* bottom: 0px; */
-    left: 3%;
-    /* position: absolute; */
+    height: 50px;
   }
   .material-icons.close-class {
      font-size: 0.7rem;
@@ -117,9 +123,20 @@ div ul {
     position: relative;
     top: 2px;
   }
+  .send-btn {
+    right: 0px;
+    position: absolute;
+    bottom: 5px;
+  }
   .flex-space-between{
     display: flex;
     justify-content: space-between;
   }
+  @media only screen and (max-width: 850px) {
+  .flex-space-between{
+    display: block;
+  }
+}
+
 
   

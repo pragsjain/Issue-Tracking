@@ -1,11 +1,8 @@
-const express = require('express')
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const time = require('./../libs/timeLib');
 const response = require('./../libs/responseLib')
 const logger = require('./../libs/loggerLib');
-const appConfig = require("./../../config/appConfig")
-//const formidable = require('formidable')
 
 //Importing the model here 
 const IssueModel = mongoose.model('Issue')
@@ -46,7 +43,6 @@ let viewByIssueId = (req, res) => {
             let apiResponse = response.generate(true, 'No Issue Found', 404, null)
             res.send(apiResponse)
         } else {
-            result=generateFileUrl(result)
             let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
             res.send(apiResponse)
         }
@@ -69,7 +65,6 @@ let viewByStatus = (req, res) => {
             let apiResponse = response.generate(true, 'No Issue Found', 404, null)
             res.send(apiResponse)
         } else {
-            result=generateFileUrl(result)
             let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
             res.send(apiResponse)
         }
@@ -92,7 +87,6 @@ let viewByAssignee = (req, res) => {
             let apiResponse = response.generate(true, 'No Issue Found', 404, null)
             res.send(apiResponse)
         } else {
-            result=generateFileUrl(result)
             let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
             res.send(apiResponse)
         }
@@ -105,22 +99,10 @@ let viewByAssignee = (req, res) => {
 let editIssue = (req, res) => {
 
     // console.log('issueId',issueId);
-    // console.log('files',req.files)
     editIssue=req.body
-    filespath=[]
     console.log(req);
-    console.log('req.files->',req.files)
-    if(req.files !==null){
-        req.files.forEach(element => {
-            filespath.push(element.path);
-        });
-    editIssue['files']=filespath
-    }
-    // console.log('filespath',filespath)
     //  console.log('title',req.body['title']);
     //  console.log('watchers',req.body.watchers);
-    // console.log('comments',req.body.comments);
-
 
     console.log('édit Issue->',editIssue)
     IssueModel.findOneAndUpdate({ 'issueId': req.params.issueId }, {$set:editIssue}, { new: true }).exec((err, result) => {
@@ -133,7 +115,6 @@ let editIssue = (req, res) => {
             let apiResponse = response.generate(true, 'No Issue Found', 404, null)
             res.send(apiResponse)
         } else {
-            result=generateFileUrl(result)
             let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
             res.send(apiResponse)
         }
@@ -163,16 +144,8 @@ let createIssue = (req, res) => {
     let issueId = shortid.generate()
     console.log('issueId',issueId);
    // console.log(req.body);
-    console.log('files',req.files)
-    filespath=[]
-    if(req.files){
-        req.files.forEach(element => {
-            filespath.push(element.path);
-        });
-    }
     // console.log('title',req.body['title']);
     // console.log('watchers',req.body.watchers);
-    // console.log('comments',req.body.comments); 
     let newIssue = new IssueModel({
         issueId: issueId,
         title: req.body.title,
@@ -182,8 +155,6 @@ let createIssue = (req, res) => {
         assignee: req.body.assignee,
         watchers: req.body.watchers,
         created: time.now(),
-        comments: req.body.comments,
-        files: filespath
     }) // end new issue model
 
     newIssue.save((err, result) => {
@@ -192,26 +163,10 @@ let createIssue = (req, res) => {
             let apiResponse = response.generate(true, 'Failed to create new Issue', 500, null)
             res.send(apiResponse);
         } else {
-            result=generateFileUrl(result)
             let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
             res.send(apiResponse)   
         }        
     }) // end new issue save
-}
-
-generateFileUrl= (result) => {
-    var files=[];
-    if(result.files!==[]){
-        result.files.forEach(element => {
-        var fileObj={};
-          fileObj['url']='http://localhost:3000/'+element;
-          fileObj['name']= element.split('\\')[1];
-          files.push(fileObj);
-      });
-    }
-    result['files']=files
-    //console.log('result files',files)
-    return result;
 }
 
 

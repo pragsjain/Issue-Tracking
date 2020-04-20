@@ -85,21 +85,42 @@ export class AppService {
     return this.http.post(`${this.url}/api/v1/issues/${issueId}/delete`,issueId);
   } 
 
-  getFilesArray(files){
-    let filesArray=[]
-    files.forEach(element => {
-      var image_data =  this.http.get<any>(element.url, { responseType: 'blob' as 'json' });
-        image_data.subscribe
-        (res => {
-          var file_object = new File([res], element.name, { type: 'image/jpeg', lastModified:Date.now()});
-          file_object['url']=element.url;
-          filesArray.push(file_object);
-        });
-    });
-    return filesArray;
-  }
+  getCommentbyIssueId(issueId): Observable<any> {
+    return this.http.get(`${this.url}/api/v1/comments/view/${issueId}`)
+    .pipe(map((response:any) =>{
+        return response;
+    }),catchError(<T>(error: any, result?: T) => {
+      console.log(error);
+      return this.handleError(error)
+    }))
+  } 
 
-  
+  createComment(formdata): Observable<any> {
+    return this.http.post(`${this.url}/api/v1/comments/create`, formdata);
+  } 
+
+  deleteComment(commentId): Observable<any> {
+    return this.http.post(`${this.url}/api/v1/comments/${commentId}/delete`,commentId);
+  } 
+
+  getFilebyIssueId(issueId): Observable<any> {
+    return this.http.get(`${this.url}/api/v1/files/view/${issueId}`)
+    .pipe(map((response:any) =>{
+        return response;
+    }),catchError(<T>(error: any, result?: T) => {
+      console.log(error);
+      return this.handleError(error)
+    }))
+  } 
+
+  createFile(formdata): Observable<any> {
+    console.log('here too')
+    return this.http.post(`${this.url}/api/v1/files/create`, formdata);
+  } 
+
+  deleteFile(fileId): Observable<any> {
+    return this.http.post(`${this.url}/api/v1/files/${fileId}/delete`,fileId);
+  } 
 
 
 

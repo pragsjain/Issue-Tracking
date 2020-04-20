@@ -25,7 +25,6 @@ let setRouter = (app) => {
 
     // defining routes.
 
-
     app.get(baseUrl+'/all',issueController.getAllIssue);
 
     /**
