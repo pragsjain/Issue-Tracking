@@ -56,12 +56,12 @@ class AppComponent {
         this.socketService.setupSocketConnection();
         this.appService.username.subscribe(result => {
             this.userName = result;
-            console.log(this.router);
-            console.log(this.route);
-            //this.isLogin= event['url'] =='/login'?true:false
-            //this.isRegister= event['url'] =='/register'?true:false
+            //   console.log(this.router);
+            //   console.log(this.route);
+            //  //this.isLogin= event['url'] =='/login'?true:false
+            //  //this.isRegister= event['url'] =='/register'?true:false
         });
-        console.log(this.isLogin, this.isRegister);
+        //console.log(this.isLogin,this.isRegister)
     }
     logout() {
         let userId = this.appService.getUserInfoFromLocalstorage()['userId'];
@@ -301,7 +301,7 @@ class AppService {
         this.setTokenInLocalStorage = (data) => {
             localStorage.setItem('token', JSON.stringify(data));
         };
-        this.usernameSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.getUserInfoFromLocalstorage().userName);
+        this.usernameSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]('');
         this.username = this.usernameSource.asObservable();
     }
     signupFunction(formdata) {
@@ -1502,6 +1502,7 @@ class LoginComponent {
     }
     ngOnInit() {
         this.resetForm();
+        this.appService.usernameSource.next('');
     }
     resetForm() {
         this.createLoginForm = this.fb.group({

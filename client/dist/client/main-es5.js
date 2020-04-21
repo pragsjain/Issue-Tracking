@@ -101,12 +101,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           //socket connection
           this.socketService.setupSocketConnection();
           this.appService.username.subscribe(function (result) {
-            _this.userName = result;
-            console.log(_this.router);
-            console.log(_this.route); //this.isLogin= event['url'] =='/login'?true:false
-            //this.isRegister= event['url'] =='/register'?true:false
-          });
-          console.log(this.isLogin, this.isRegister);
+            _this.userName = result; //   console.log(this.router);
+            //   console.log(this.route);
+            //  //this.isLogin= event['url'] =='/login'?true:false
+            //  //this.isRegister= event['url'] =='/register'?true:false
+          }); //console.log(this.isLogin,this.isRegister)
         }
       }, {
         key: "logout",
@@ -546,7 +545,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           localStorage.setItem('token', JSON.stringify(data));
         };
 
-        this.usernameSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.getUserInfoFromLocalstorage().userName);
+        this.usernameSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]('');
         this.username = this.usernameSource.asObservable();
       }
 
@@ -2846,6 +2845,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         key: "ngOnInit",
         value: function ngOnInit() {
           this.resetForm();
+          this.appService.usernameSource.next('');
         }
       }, {
         key: "resetForm",
