@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { IssueDescComponent } from './issue-desc/issue-desc.component';
 import { HttpClientModule } from '@angular/common/http';
 import { QuillModule } from 'ngx-quill'
+import { SocketioService } from './socketio.service';
 
 
 const appRoutes: Routes = [

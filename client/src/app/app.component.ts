@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AppService } from './app.service';
 import { Router } from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
+import { SocketioService } from './socketio.service';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +16,15 @@ export class AppComponent {
   isLogin:boolean;
   isRegister:boolean;
   
-  constructor(private appService: AppService, private router: Router,private route: ActivatedRoute){
+  constructor(private appService: AppService,
+     private socketService:SocketioService,
+     private router: Router,
+     private route: ActivatedRoute){
   }
  ngOnInit(){
+   //socket connection
+   this.socketService.setupSocketConnection();
+   
     this.appService.username.subscribe(result => {
     this.userName = result; 
   

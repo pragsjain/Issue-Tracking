@@ -77,8 +77,9 @@ export class AppService {
     return this.http.post(`${this.url}/api/v1/issues/create`, formdata);
   } 
     
-  editIssue(formdata): Observable<any> {
-    return this.http.put(`${this.url}/api/v1/issues/${formdata.get('issueId')}/edit`, formdata);
+  editIssue(data): Observable<any> {
+    console.log(data);
+    return this.http.put(`${this.url}/api/v1/issues/${data['issueId']}/edit`, data);
   } 
 
   deleteIssue(issueId): Observable<any> {

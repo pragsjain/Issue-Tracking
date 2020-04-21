@@ -1,19 +1,18 @@
 
-  <div *ngIf="!isIssue && !isCreateNewIssue" class="noIssue">No Issue Found</div>
-  <div class="issue-desc-page" 
-  [ngClass]="{'showFlex':isIssue || isCreateNewIssue,'hide':!isIssue && !isCreateNewIssue}">
+  <div *ngIf="noIssueDetail" class="noIssue">No Issue Found</div>
+  <div class="issue-desc-page">
 
-    <mat-card  class="create-form" [ngClass]="{'show':isEdit || isCreateNewIssue,'hide':!isEdit && !isCreateNewIssue}">
+    <mat-card  class="create-form" [ngClass]="{'show':isForm ,'hide':!isForm }">
       <form [formGroup]="createForm" >
       <section class="mat-typography">      
         <div class="flex-space-between">
-          <h3 *ngIf="issueId==''">Create a new Issue</h3> 
-          <h3 *ngIf="issueId!==''">Edit Issue</h3> 
+          <h3 *ngIf="!issueId">Create a new Issue</h3> 
+          <h3 *ngIf="issueId">Edit Issue</h3> 
             <div>
-              <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true" *ngIf="!isWatcher && isEdit">
+              <button mat-raised-button class="btn btn-secondary" (click)="addWatcher()" *ngIf="!isWatcher && issueId">
                     <i class="material-icons">visibility </i> Watch 
               </button>  &nbsp;
-              <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=false" *ngIf="isWatcher && isEdit">
+              <button mat-raised-button class="btn btn-secondary" (click)="removeWatcher()" *ngIf="isWatcher && issueId">
                     <i class="material-icons">visibility_off </i> Unwatch
               </button>  &nbsp;
               <button mat-raised-button class="btn btn-secondary" routerLink="/dashboard">
@@ -28,7 +27,7 @@
         </section>
         <mat-divider></mat-divider>
       <br>
-      <span *ngIf="issueId!==''&& issue?.created" class="created-class">
+      <span *ngIf="!issueId&& issue?.created" class="created-class">
         Created On :<i> {{issue?.created | date}}</i> &nbsp;
       </span>
       <span *ngIf="issueId==''" class="created-class">
@@ -90,20 +89,20 @@
     </mat-card>
   
 
-    <mat-card  class="issue-desc" [ngClass]="{'showBlock':!isEdit && !isCreateNewIssue ,'hide':isEdit||isCreateNewIssue}">
+    <mat-card  class="issue-desc" [ngClass]="{'showBlock':!isForm ,'hide':isForm}">
       <section class="mat-typography">
         <div class="flex-space-between">
           <h3 >Issue Desciption</h3> 
           <div>
-            <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=true;addWatcher()" *ngIf="!isWatcher">
+            <button mat-raised-button class="btn btn-secondary" (click)="addWatcher()" *ngIf="!isWatcher">
                   <i class="material-icons">visibility </i> Watch
             </button> &nbsp;
-            <button mat-raised-button class="btn btn-secondary" (click)="isWatcher=false;removeWatcher()" *ngIf="isWatcher">
+            <button mat-raised-button class="btn btn-secondary" (click)="removeWatcher()" *ngIf="isWatcher">
                   <i class="material-icons">visibility_off </i> Unwatch
             </button> &nbsp;
             <button mat-raised-button class="btn btn-secondary" routerLink="/dashboard">
               <i class="material-icons">undo </i>Dashboard</button> &nbsp;
-            <button mat-raised-button class="btn btn-secondary" (click)="isEdit=true">
+            <button mat-raised-button class="btn btn-secondary" (click)="isForm=true">
                 <i class="material-icons">edit </i> Edit
             </button> 
           </div>
@@ -127,7 +126,7 @@
       <br>
     </mat-card>
 
-    <mat-card class="chat" #scrollMe [scrollTop]="scrolltop" [ngClass]="{'showBlock':isIssue ,'hide':!isIssue}">
+    <mat-card class="chat" #scrollMe [scrollTop]="scrolltop" [ngClass]="{'showBlock':issueId ,'hide':!issueId}">
       <section class="mat-typography">
         <h3>Comment Section</h3> 
       </section>

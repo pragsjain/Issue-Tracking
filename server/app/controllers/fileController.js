@@ -34,14 +34,14 @@ console.log('íssueId',req.params.issueId);
 
         if (err) {
             logger.error(err, 'fileController: viewByIssueId()', 5)
-            let apiResponse = response.generate(true, 'Failed To Find Issue Details', 500, null)
+            let apiResponse = response.generate(true, 'Failed To Find File Details', 500, null)
             res.send(apiResponse)
         } else if (result == undefined || result == null || result == '') {
             logger.error('No Issue Found', 'fileController: viewByIssueId()', 5)
-            let apiResponse = response.generate(true, 'No Issue Found', 404, null)
+            let apiResponse = response.generate(true, 'No File Found', 404, null)
             res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
+            let apiResponse = response.generate(false, 'All File Details Found', 200, result)
             res.send(apiResponse)
         }
     })

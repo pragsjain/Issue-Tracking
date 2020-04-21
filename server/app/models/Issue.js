@@ -31,7 +31,7 @@ let issueSchema = new Schema(
             default: ''
         },
         watchers:{
-            type:[String],
+            type:Array,
             default: []
         },
         created: {

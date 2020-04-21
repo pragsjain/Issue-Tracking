@@ -19,15 +19,14 @@ export class IssueDescComponent implements OnInit {
   statusList :String[] = ['In Progress', 'Done', 'Not picked'];
   editorStyle={height:'150px',background: '#fff'}
   date=new Date();
-  isCreateNewIssue=true;
-  isIssue=false;
-  isEdit=false;
+  isForm=true;
   isWatcher=false;
   isUserList=false;
   userList=[];
   user;
-  comment;
   comments;
+  noIssueDetail;
+
   @ViewChild('scrollMe', { read: ElementRef }) 
   scrollMe: ElementRef;
   scrolltop:number = null
@@ -42,14 +41,12 @@ export class IssueDescComponent implements OnInit {
       this.route.params.subscribe(params =>{
         console.log('params.issueId->',params.issueId);
         if(params.issueId!==''){
-          this.isCreateNewIssue=false;
           this.issueId=params.issueId;
     
           //get issue by issueId
           this.appService.getIssueById(this.issueId).subscribe( (res) =>{
             console.log('res',res);
             if(!res.error){
-            this.isIssue=true;
             this.setFormValue(res.data);
             }
             else{
@@ -71,12 +68,11 @@ export class IssueDescComponent implements OnInit {
           if(this.issueId){
             this.issue.assigneeFullName= this.getFullName(this.issue.assignee,this.userList)
             this.issue.resporterFullName= this.getFullName(this.issue.reporter,this.userList)
-            let userName= this.user.userName;
-            this.isWatcher=this.issue.watchers.indexOf(userName)==-1?false:true;
+            this.isWatcher=this.issue.watchers.indexOf(this.user.userName)==-1?false:true;
           }
         }
         else{
-          console.log(res.message);
+          //console.log(res.message);
           //this.toastr.error(res.message)
           }
         },(error)=>{
@@ -136,22 +132,20 @@ export class IssueDescComponent implements OnInit {
    createFormData(){
     console.log(this.createForm.value)
      let issue=this.createForm.value;
-     var formData = new FormData();
+     var formData = {};
       if(this.issueId)
-      formData.append('issueId',this.issueId)
-      formData.append('title',issue.title)
-      formData.append('description',issue.description)
-      formData.append('status',issue.status)
-      formData.append('assignee',issue.assignee)
-      formData.append('reporter',issue.reporter)
-      formData.append('created',issue.created)
-     return formData;
-     //you cant console.log formdata directly
-      console.log(formData.get('title'));
+      formData['issueId']=this.issueId
+      formData['title']=issue.title
+      formData['description']=issue.description
+      formData['status']=issue.status
+      formData['assignee']=issue.assignee
+      formData['reporter']=issue.reporter
+      formData['created']=issue.created
+      return formData;
    }
 
   saveClicked(){
-    this.isEdit=false;
+    this.isForm=false;
     let formData = this.createFormData();
     if(this.issueId==''){
       this.appService.createIssue(formData).subscribe((res)=>{
@@ -164,16 +158,19 @@ export class IssueDescComponent implements OnInit {
   }
 
   editIssue(formData){
+    console.log(formData);
     this.appService.editIssue(formData).subscribe((res)=>{
       console.log(res);
       this.issue=res.data;
       //set full name of assignee and reporter according to assignee id and reporter id
       this.issue.assigneeFullName= this.getFullName(res.data.assignee,this.userList)
       this.issue.resporterFullName= this.getFullName(res.data.reporter,this.userList)
+      this.isWatcher=this.issue.watchers.indexOf(this.user.userName)==-1?false:true;
     })
   }
 
   onFileSelected(event) {
+    this.isForm=false;
     var formData = new FormData();
     let element=<File>event.target.files[0]
     formData.append('issueId',this.issueId);
@@ -193,6 +190,7 @@ export class IssueDescComponent implements OnInit {
   }
   
   removeFile(fileId){
+    this.isForm=false;
     this.appService.deleteFile(fileId).subscribe((res)=>{
       if(!res.error){
         console.log(res.message);
@@ -205,22 +203,25 @@ export class IssueDescComponent implements OnInit {
   }
 
   addWatcher(){
-    var formData = new FormData();
-    let userName= this.user.userName;
+    var formData = {};
     console.log(this.issue.watchers);
-    if(this.issue.watchers.indexOf(userName)==-1)
-    this.issue.watchers.push(userName);
-    formData.append('watchers',this.issue.watchers);
-    formData.append('issueId',this.issue.issueId);
+    if(this.issue.watchers.indexOf(this.user.userName)==-1){
+    this.issue.watchers.push(this.user.userName);
+    console.log('watchers->',this.issue.watchers);
+    formData['watchers']=this.issue.watchers;
+    formData['issueId']=this.issue.issueId;
     this.editIssue(formData);
+    }
    }
 
    removeWatcher(){
-    var formData = new FormData();
+    var formData = {};
     let userName= this.user.userName;
-    var filtered = this.issue.watchers.filter(function(value){ return value == userName});
-    formData.append('watchers',filtered);
-    formData.append('issueId',this.issue.issueId);
+    var filtered = this.issue.watchers.filter(function(value){ return value !== userName});
+    console.log('watchers->',filtered)
+    formData['watchers']=filtered;
+    formData['issueId']=this.issue.issueId;
+    console.log(formData);
     this.editIssue(formData);
    }
 
@@ -248,12 +249,13 @@ export class IssueDescComponent implements OnInit {
 
 getCommentbyIssueId(issueId){
   this.appService.getCommentbyIssueId(issueId).subscribe((res)=>{
-    console.log(res);
+    //console.log(res);
     this.scrolltop = this.scrollMe.nativeElement.scrollHeight
     if(!res.error){
     this.comments=res.data
     }
     else{
+      this.comments=[]
       console.log(res.message);
     }
   })
@@ -261,11 +263,12 @@ getCommentbyIssueId(issueId){
 
 getFilebyIssueId(issueId){
   this.appService.getFilebyIssueId(issueId).subscribe((res)=>{
-    console.log('filesArray',res);
+    //console.log('filesArray',res);
     if(!res.error){
     this.filesArray=res.data
     }
     else{
+      this.filesArray=[]
       console.log(res.message);
     }
   })

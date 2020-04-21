@@ -53,6 +53,10 @@ export class DashboardComponent implements OnInit {
     this.dataSource.sort = this.sort;
     },(error)=>{
       console.log('error',error);
+      this.ELEMENT_DATA =[];
+      this.dataSource= new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     })
   }
 

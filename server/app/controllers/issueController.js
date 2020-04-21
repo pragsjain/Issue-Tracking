@@ -100,9 +100,9 @@ let editIssue = (req, res) => {
 
     // console.log('issueId',issueId);
     editIssue=req.body
-    console.log(req);
+    //console.log(req);
     //  console.log('title',req.body['title']);
-    //  console.log('watchers',req.body.watchers);
+     console.log('watchers->',req.body.watchers);
 
     console.log('édit Issue->',editIssue)
     IssueModel.findOneAndUpdate({ 'issueId': req.params.issueId }, {$set:editIssue}, { new: true }).exec((err, result) => {

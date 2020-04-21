@@ -34,14 +34,14 @@ console.log('íssueId',req.params.issueId);
 
         if (err) {
             logger.error(err, 'commentController: viewByIssueId()', 5)
-            let apiResponse = response.generate(true, 'Failed To Find Issue Details', 500, null)
+            let apiResponse = response.generate(true, 'Failed To Find Comment Details', 500, null)
             res.send(apiResponse)
         } else if (result == undefined || result == null || result == '') {
             logger.error('No Issue Found', 'commentController: viewByIssueId()', 5)
-            let apiResponse = response.generate(true, 'No Issue Found', 404, null)
+            let apiResponse = response.generate(true, 'No Comment Found', 404, null)
             res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
+            let apiResponse = response.generate(false, 'All Comment Details Found', 200, result)
             res.send(apiResponse)
         }
     })

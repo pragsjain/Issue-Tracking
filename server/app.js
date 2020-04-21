@@ -11,6 +11,7 @@ const routeLoggerMiddleware = require('./app/middlewares/routeLogger.js');
 const globalErrorMiddleware = require('./app/middlewares/appErrorHandler');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+//const cors =require('cors')
 
 
 app.use(morgan('dev'));
@@ -79,13 +80,30 @@ app.use(globalErrorMiddleware.globalNotFoundHandler);
  */
 
 const server = http.createServer(app);
+//app.use(cors());
 // start listening to http server
-console.log(appConfig);
+//console.log(appConfig);
 server.listen(appConfig.port);
 server.on('error', onError);
 server.on('listening', onListening);
 
 // end server listening code
+
+const io = require('socket.io')(server);
+  io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
+    socket.on('my message', (msg) => {
+      console.log('message: ' + msg);
+    });
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+  });
+
 
 /**
  * Event listener for HTTP server "error" event.
