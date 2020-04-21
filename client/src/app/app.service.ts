@@ -33,7 +33,7 @@ export class AppService {
     localStorage.setItem('token', JSON.stringify(data));
   }
 
-  usernameSource = new BehaviorSubject<string>(this.getUserInfoFromLocalstorage().userName);
+  usernameSource = new BehaviorSubject<string>('');
   username = this.usernameSource.asObservable()
 
 

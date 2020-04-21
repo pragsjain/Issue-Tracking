@@ -23,7 +23,8 @@ export class LoginComponent implements OnInit {
   ) {}
   
   ngOnInit() {
-    this.resetForm()
+    this.resetForm();
+    this.appService.usernameSource.next('');
   }
 
   resetForm(){

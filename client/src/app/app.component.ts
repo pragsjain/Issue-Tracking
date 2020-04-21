@@ -24,17 +24,16 @@ export class AppComponent {
  ngOnInit(){
    //socket connection
    this.socketService.setupSocketConnection();
-   
+
     this.appService.username.subscribe(result => {
     this.userName = result; 
   
-      console.log(this.router);
-      console.log(this.route);
-     //this.isLogin= event['url'] =='/login'?true:false
-     //this.isRegister= event['url'] =='/register'?true:false
-    });
-    
-  console.log(this.isLogin,this.isRegister)
+    //   console.log(this.router);
+    //   console.log(this.route);
+    //  //this.isLogin= event['url'] =='/login'?true:false
+    //  //this.isRegister= event['url'] =='/register'?true:false
+     });
+    //console.log(this.isLogin,this.isRegister)
  }
 
  logout(){
