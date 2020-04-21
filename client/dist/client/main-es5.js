@@ -3381,8 +3381,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     var environment = {
       production: false,
       //SOCKET_ENDPOINT: 'http://localhost:3000',
-      SOCKET_ENDPOINT: location.hostname + ':3000',
-      aws_server: 'http://52.66.252.216:3000'
+      //SOCKET_ENDPOINT:location.hostname+':3000',
+      SOCKET_ENDPOINT: 'http://52.66.252.216:3000'
     };
     /*
      * For easier debugging in development mode, you can import the following file
