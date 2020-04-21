@@ -4,7 +4,7 @@ appConfig.port = 3000;
 appConfig.allowedCorsOrigin = "*";
 appConfig.env = "dev";
 appConfig.db = {
-    uri: 'mongodb://localhost:27017/issueTrackingDb'
+    uri: 'mongodb://127.0.0.1:27017/issueTrackingDb'
   }
 appConfig.apiVersion = '/api/v1';
 appConfig.url='http://localhost:3000/';
