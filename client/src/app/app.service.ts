@@ -8,13 +8,14 @@ import { Observable,throwError, of } from 'rxjs';
 import { map ,catchError} from "rxjs/operators";
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
   //private url =  'https://chatapi.edwisor.com';
-  private url =  'http://localhost:3000';
+  private url =  environment.SOCKET_ENDPOINT
 
   constructor(
     private http: HttpClient,
