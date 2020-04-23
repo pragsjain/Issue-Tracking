@@ -72,8 +72,22 @@ fs.readdirSync(routesPath).forEach(function (file) {
 // calling global 404 handler after route
 
 app.use(globalErrorMiddleware.globalNotFoundHandler);
-
 // end global 404 handler
+
+// end server listening code
+// const io = require('socket.io')(server);
+//   io.on('connection', (socket) => {
+//     console.log('a user connected');
+//     socket.on('disconnect', () => {
+//       console.log('user disconnected');
+//       //socket.removeAllListeners();
+//     });
+//      socket.on('sendnotification', (msg) => {
+//        console.log('message: ' + msg.message);
+//        socket.broadcast.emit('notification',msg );
+//      });
+    
+//   });
 
 /**
  * Create HTTP server.
@@ -87,21 +101,7 @@ server.listen(appConfig.port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-// end server listening code
 
-const io = require('socket.io')(server);
-  io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-      socket.removeAllListeners();
-    });
-     socket.on('sendnotification', (msg) => {
-       console.log('message: ' + msg.message);
-       socket.broadcast.emit('notification',msg );
-     });
-    
-  });
 
 
 /**
