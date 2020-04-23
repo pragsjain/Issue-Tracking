@@ -8,7 +8,7 @@ import { SocketioService } from '../socketio.service';
 @Component({
   selector: 'app-issue-desc',
   templateUrl: './issue-desc.component.html',
-  styleUrls: ['./issue-desc.component.css']
+  styleUrls: ['./issue-desc.component.css'],
 })
 export class IssueDescComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class IssueDescComponent implements OnInit {
   createForm: FormGroup;
   commentForm: FormGroup;
   filesArray: File[] =[]; 
-  statusList :String[] = ['In Progress', 'Done', 'Not picked'];
+  statusList :String[] = ['Open', 'In Progress', 'Closed', 'Reopened' ,'Resolved'];
   editorStyle={height:'150px',background: '#fff'}
   date=new Date();
   isForm=true;
@@ -35,7 +35,7 @@ export class IssueDescComponent implements OnInit {
   scrolltop:number = null
 
   constructor(private appService: AppService, private fb: FormBuilder, private router:Router,
-    private route:ActivatedRoute,private toastr: ToastrService,private socketService:SocketioService,) { 
+    private route:ActivatedRoute,private toastr: ToastrService,private socketService:SocketioService) { 
    this.resetForm()
   }
   
@@ -93,7 +93,7 @@ export class IssueDescComponent implements OnInit {
      issueId:[''],
      title:['',Validators.required],
      description:[''],
-     status:['',Validators.required],
+     status:['Open',Validators.required],
      assignee:['',Validators.required],
      reporter:[this.reporterFullName,Validators.required],
      watchers:[[]],
@@ -144,8 +144,13 @@ export class IssueDescComponent implements OnInit {
     let formData = this.createFormData();
     if(this.issueId==''){
       this.appService.createIssue(formData).subscribe((res)=>{
-        //console.log(res);
+        if(!res.error){
+          var notificationMessage =`${this.user.fullName} has created an issue Issue Id: ${res.data.issueId} and assigned to you.`
+          this.sendNotification(notificationMessage,res.data.issueId)
         this.router.navigate(['/dashboard']);
+        }else{
+          this.toastr.error('Issue not Created. Try Again !')
+        }
       })
     }else{
       this.editIssue(formData);
@@ -155,7 +160,7 @@ export class IssueDescComponent implements OnInit {
         notificationMessage=notificationMessage+' ' +el+',';
       })
       notificationMessage=notificationMessage.substring(0,notificationMessage.length-1)
-      this.sendNotification(notificationMessage)
+      this.sendNotification(notificationMessage,this.issueId)
     }
   }
 
@@ -189,7 +194,7 @@ export class IssueDescComponent implements OnInit {
     //Send Notification
     var notificationMessage =`${this.user.fullName} has added files in Issue Id: ${this.issueId}-`
     
-    this.sendNotification(notificationMessage)
+    this.sendNotification(notificationMessage,this.issueId)
   }
   
   removeFile(fileId){
@@ -206,7 +211,7 @@ export class IssueDescComponent implements OnInit {
     //Send Notification
     var notificationMessage =`${this.user.fullName} has removed files in Issue Id: ${this.issueId}-`
     
-    this.sendNotification(notificationMessage)
+    this.sendNotification(notificationMessage,this.issueId)
   }
 
   addWatcher(){
@@ -219,7 +224,7 @@ export class IssueDescComponent implements OnInit {
     }
     var notificationMessage =`${this.user.fullName} is watching Issue Id: ${this.issueId}-`
     
-    this.sendNotification(notificationMessage)
+    this.sendNotification(notificationMessage,this.issueId)
    }
 
    removeWatcher(){
@@ -231,7 +236,7 @@ export class IssueDescComponent implements OnInit {
     this.editIssue(formData);
     var notificationMessage =`${this.user.fullName} is no longer watching Issue Id: ${this.issueId}-`
     
-    this.sendNotification(notificationMessage)
+    this.sendNotification(notificationMessage,this.issueId)
    }
 
    sendComment(){
@@ -255,7 +260,7 @@ export class IssueDescComponent implements OnInit {
         comment:['',Validators.required]
       })
       var notificationMessage =`${this.user.fullName} has commented on Issue Id: ${this.issueId}-`
-      this.sendNotification(notificationMessage)
+      this.sendNotification(notificationMessage,this.issueId)
       
   }
 
@@ -312,11 +317,12 @@ getFilebyIssueId(issueId){
     
   }
 
-  sendNotification(notificationMessage){
+  sendNotification(notificationMessage,issueId){
     let notification={}
     notification['message']=notificationMessage;
     notification['userFullName']=this.user.fullName;
-    notification['issueId']=this.issueId;
+    notification['issueId']=issueId;
+    //console.log(this.socketService.socket)
     this.socketService.socket.emit('sendnotification', notification);
   }
 }

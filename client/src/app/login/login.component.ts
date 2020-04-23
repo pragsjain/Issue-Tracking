@@ -4,13 +4,14 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ToastrService } from 'ngx-toastr';
 import { AppService } from '../app.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { SocketioService } from '../socketio.service';
 
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   createLoginForm: FormGroup;
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
     private appService: AppService,
     private router: Router,
     private toastr: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private socketService:SocketioService
   ) {}
   
   ngOnInit() {
@@ -53,6 +55,9 @@ export class LoginComponent implements OnInit {
              this.appService.setUserInfoInLocalStorage(apiResponse.data.userDetails)
              this.appService.setTokenInLocalStorage(apiResponse.data.token)
              this.appService.fullNameSource.next(apiResponse.data.userDetails.fullName);
+              //socket connection
+              this.socketService.setupSocketConnection({data:'used logged in ,socket established!'});
+              //console.log(this.socketService.socket)
              this.router.navigate(['/dashboard']);
           } else {
             this.toastr.error(apiResponse.message)

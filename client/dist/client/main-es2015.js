@@ -35,29 +35,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppComponent", function() { return AppComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
 /* harmony import */ var _app_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.service */ "./src/app/app.service.ts");
-/* harmony import */ var _socketio_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./socketio.service */ "./src/app/socketio.service.ts");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _socketio_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./socketio.service */ "./src/app/socketio.service.ts");
 
 
 
 
 
 class AppComponent {
-    constructor(appService, socketService, router, route) {
+    constructor(appService, router, route, socketService) {
         this.appService = appService;
-        this.socketService = socketService;
         this.router = router;
         this.route = route;
+        this.socketService = socketService;
         this.title = 'client';
         this.isUser = true;
         this.fullName = '';
     }
     ngOnInit() {
-        //socket connection
-        this.socketService.setupSocketConnection({ data: 'hi wassup !' });
         //if user is present in localstorage, get from there or else initialize 
         if (this.appService.getUserInfoFromLocalstorage()) {
             this.appService.fullNameSource.next(this.appService.getUserInfoFromLocalstorage().fullName);
+            //socket connection
+            this.socketService.setupSocketConnection({ data: 'used logged in ,socket established!' });
         }
         this.appService.fullName.subscribe(result => {
             this.fullName = result;
@@ -77,8 +77,8 @@ class AppComponent {
         console.log('Toastr clicked');
     }
 }
-AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_app_service__WEBPACK_IMPORTED_MODULE_1__["AppService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_socketio_service__WEBPACK_IMPORTED_MODULE_2__["SocketioService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_3__["ActivatedRoute"])); };
-AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: AppComponent, selectors: [["app-root"]], decls: 16, vars: 3, consts: [[1, "navbar", "navbar-expand-md", "navbar-dark", "bg-dark", "flex-class"], [1, "material-icons"], ["href", "/", 1, "navbar-brand"], [1, "material-icons", 3, "hidden"], [1, "user", 3, "hidden"], ["mat-raised-button", "", 1, "btn", "btn-secondary", 3, "click"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
+AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_app_service__WEBPACK_IMPORTED_MODULE_1__["AppService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_socketio_service__WEBPACK_IMPORTED_MODULE_3__["SocketioService"])); };
+AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: AppComponent, selectors: [["app-root"]], decls: 15, vars: 4, consts: [[1, "navbar", "navbar-expand-md", "navbar-dark", "bg-dark", "flex-class"], [1, "material-icons"], ["href", "/", 1, "navbar-brand"], [1, "material-icons", 3, "hidden"], [1, "user", 3, "hidden"], ["mat-raised-button", "", 1, "btn", "btn-secondary", 3, "hidden", "click"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "span", 1);
@@ -95,16 +95,14 @@ AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](9, "span", 4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](10);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](11, "span", 1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](12, "notifications ");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](13, "button", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_13_listener() { return ctx.logout(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](14, "Logout");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](11, "\u00A0 ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "button", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_12_listener() { return ctx.logout(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "Logout");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](15, "router-outlet");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](14, "router-outlet");
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](7);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.fullName);
@@ -112,7 +110,9 @@ AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.fullName);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Hey, ", ctx.fullName, "");
-    } }, directives: [_angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterOutlet"]], styles: [".flex-class[_ngcontent-%COMP%]{\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: space-between;\r\n    color:white;\r\n}\r\n.material-icons[_ngcontent-%COMP%]{\r\n    color: white;\r\n    position: relative;\r\n    top: 4px;\r\n    padding: 0px 10px;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLDhCQUE4QjtJQUM5QixXQUFXO0FBQ2Y7QUFDQTtJQUNJLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsUUFBUTtJQUNSLGlCQUFpQjtBQUNyQiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmZsZXgtY2xhc3N7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcclxuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcclxuICAgIGNvbG9yOndoaXRlO1xyXG59XHJcbi5tYXRlcmlhbC1pY29uc3tcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICAgIHRvcDogNHB4O1xyXG4gICAgcGFkZGluZzogMHB4IDEwcHg7XHJcbn0iXX0= */"] });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.fullName);
+    } }, directives: [_angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterOutlet"]], styles: [".flex-class[_ngcontent-%COMP%]{\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: space-between;\r\n    color:white;\r\n}\r\n.material-icons[_ngcontent-%COMP%]{\r\n    color: white;\r\n    position: relative;\r\n    top: 4px;\r\n    padding: 0px 10px;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLDhCQUE4QjtJQUM5QixXQUFXO0FBQ2Y7QUFDQTtJQUNJLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsUUFBUTtJQUNSLGlCQUFpQjtBQUNyQiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmZsZXgtY2xhc3N7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcclxuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcclxuICAgIGNvbG9yOndoaXRlO1xyXG59XHJcbi5tYXRlcmlhbC1pY29uc3tcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICAgIHRvcDogNHB4O1xyXG4gICAgcGFkZGluZzogMHB4IDEwcHg7XHJcbn0iXX0= */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AppComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"],
         args: [{
@@ -120,7 +120,7 @@ AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
                 templateUrl: './app.component.html',
                 styleUrls: ['./app.component.css']
             }]
-    }], function () { return [{ type: _app_service__WEBPACK_IMPORTED_MODULE_1__["AppService"] }, { type: _socketio_service__WEBPACK_IMPORTED_MODULE_2__["SocketioService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["ActivatedRoute"] }]; }, null); })();
+    }], function () { return [{ type: _app_service__WEBPACK_IMPORTED_MODULE_1__["AppService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"] }, { type: _socketio_service__WEBPACK_IMPORTED_MODULE_3__["SocketioService"] }]; }, null); })();
 
 
 /***/ }),
@@ -1050,7 +1050,7 @@ class IssueDescComponent {
         this.socketService = socketService;
         this.issueId = '';
         this.filesArray = [];
-        this.statusList = ['In Progress', 'Done', 'Not picked'];
+        this.statusList = ['Open', 'In Progress', 'Closed', 'Reopened', 'Resolved'];
         this.editorStyle = { height: '150px', background: '#fff' };
         this.date = new Date();
         this.isForm = true;
@@ -1110,7 +1110,7 @@ class IssueDescComponent {
             issueId: [''],
             title: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
             description: [''],
-            status: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
+            status: ['Open', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
             assignee: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
             reporter: [this.reporterFullName, _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
             watchers: [[]],
@@ -1158,8 +1158,14 @@ class IssueDescComponent {
         let formData = this.createFormData();
         if (this.issueId == '') {
             this.appService.createIssue(formData).subscribe((res) => {
-                //console.log(res);
-                this.router.navigate(['/dashboard']);
+                if (!res.error) {
+                    var notificationMessage = `${this.user.fullName} has created an issue Issue Id: ${res.data.issueId} and assigned to you.`;
+                    this.sendNotification(notificationMessage, res.data.issueId);
+                    this.router.navigate(['/dashboard']);
+                }
+                else {
+                    this.toastr.error('Issue not Created. Try Again !');
+                }
             });
         }
         else {
@@ -1170,7 +1176,7 @@ class IssueDescComponent {
                 notificationMessage = notificationMessage + ' ' + el + ',';
             });
             notificationMessage = notificationMessage.substring(0, notificationMessage.length - 1);
-            this.sendNotification(notificationMessage);
+            this.sendNotification(notificationMessage, this.issueId);
         }
     }
     editIssue(formData) {
@@ -1201,7 +1207,7 @@ class IssueDescComponent {
         });
         //Send Notification
         var notificationMessage = `${this.user.fullName} has added files in Issue Id: ${this.issueId}-`;
-        this.sendNotification(notificationMessage);
+        this.sendNotification(notificationMessage, this.issueId);
     }
     removeFile(fileId) {
         this.isForm = false;
@@ -1216,7 +1222,7 @@ class IssueDescComponent {
         });
         //Send Notification
         var notificationMessage = `${this.user.fullName} has removed files in Issue Id: ${this.issueId}-`;
-        this.sendNotification(notificationMessage);
+        this.sendNotification(notificationMessage, this.issueId);
     }
     addWatcher() {
         var formData = {};
@@ -1227,7 +1233,7 @@ class IssueDescComponent {
             this.editIssue(formData);
         }
         var notificationMessage = `${this.user.fullName} is watching Issue Id: ${this.issueId}-`;
-        this.sendNotification(notificationMessage);
+        this.sendNotification(notificationMessage, this.issueId);
     }
     removeWatcher() {
         var formData = {};
@@ -1237,7 +1243,7 @@ class IssueDescComponent {
         formData['issueId'] = this.issue.issueId;
         this.editIssue(formData);
         var notificationMessage = `${this.user.fullName} is no longer watching Issue Id: ${this.issueId}-`;
-        this.sendNotification(notificationMessage);
+        this.sendNotification(notificationMessage, this.issueId);
     }
     sendComment() {
         var formData = {};
@@ -1258,7 +1264,7 @@ class IssueDescComponent {
             comment: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]
         });
         var notificationMessage = `${this.user.fullName} has commented on Issue Id: ${this.issueId}-`;
-        this.sendNotification(notificationMessage);
+        this.sendNotification(notificationMessage, this.issueId);
     }
     getCommentbyIssueId(issueId) {
         this.appService.getCommentbyIssueId(issueId).subscribe((res) => {
@@ -1309,11 +1315,12 @@ class IssueDescComponent {
                 this.fieldsChanged.push('Watchers');
         });
     }
-    sendNotification(notificationMessage) {
+    sendNotification(notificationMessage, issueId) {
         let notification = {};
         notification['message'] = notificationMessage;
         notification['userFullName'] = this.user.fullName;
-        notification['issueId'] = this.issueId;
+        notification['issueId'] = issueId;
+        //console.log(this.socketService.socket)
         this.socketService.socket.emit('sendnotification', notification);
     }
 }
@@ -1559,7 +1566,7 @@ IssueDescComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefin
         args: [{
                 selector: 'app-issue-desc',
                 templateUrl: './issue-desc.component.html',
-                styleUrls: ['./issue-desc.component.css']
+                styleUrls: ['./issue-desc.component.css'],
             }]
     }], function () { return [{ type: _app_service__WEBPACK_IMPORTED_MODULE_2__["AppService"] }, { type: _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormBuilder"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["ActivatedRoute"] }, { type: ngx_toastr__WEBPACK_IMPORTED_MODULE_4__["ToastrService"] }, { type: _socketio_service__WEBPACK_IMPORTED_MODULE_5__["SocketioService"] }]; }, { scrollMe: [{
             type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"],
@@ -1584,10 +1591,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../app.service */ "./src/app/app.service.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
 /* harmony import */ var ngx_toastr__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/__ivy_ngcc__/fesm2015/ngx-toastr.js");
-/* harmony import */ var _angular_material_card__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/material/card */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/card.js");
-/* harmony import */ var _angular_material_divider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/material/divider */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/divider.js");
-/* harmony import */ var _angular_material_form_field__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/material/form-field */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/form-field.js");
-/* harmony import */ var _angular_material_input__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material/input */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/input.js");
+/* harmony import */ var _socketio_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../socketio.service */ "./src/app/socketio.service.ts");
+/* harmony import */ var _angular_material_card__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/material/card */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/card.js");
+/* harmony import */ var _angular_material_divider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/material/divider */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/divider.js");
+/* harmony import */ var _angular_material_form_field__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material/form-field */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/form-field.js");
+/* harmony import */ var _angular_material_input__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/material/input */ "./node_modules/@angular/material/__ivy_ngcc__/fesm2015/input.js");
+
 
 
 
@@ -1600,11 +1609,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class LoginComponent {
-    constructor(appService, router, toastr, fb) {
+    constructor(appService, router, toastr, fb, socketService) {
         this.appService = appService;
         this.router = router;
         this.toastr = toastr;
         this.fb = fb;
+        this.socketService = socketService;
         this.signinFunction = () => {
             let loginFormValue = this.createLoginForm.value;
             let data = {
@@ -1618,6 +1628,9 @@ class LoginComponent {
                     this.appService.setUserInfoInLocalStorage(apiResponse.data.userDetails);
                     this.appService.setTokenInLocalStorage(apiResponse.data.token);
                     this.appService.fullNameSource.next(apiResponse.data.userDetails.fullName);
+                    //socket connection
+                    this.socketService.setupSocketConnection({ data: 'used logged in ,socket established!' });
+                    //console.log(this.socketService.socket)
                     this.router.navigate(['/dashboard']);
                 }
                 else {
@@ -1647,7 +1660,7 @@ class LoginComponent {
         this.router.navigate(['/register']);
     }
 }
-LoginComponent.ɵfac = function LoginComponent_Factory(t) { return new (t || LoginComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_app_service__WEBPACK_IMPORTED_MODULE_2__["AppService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](ngx_toastr__WEBPACK_IMPORTED_MODULE_4__["ToastrService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormBuilder"])); };
+LoginComponent.ɵfac = function LoginComponent_Factory(t) { return new (t || LoginComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_app_service__WEBPACK_IMPORTED_MODULE_2__["AppService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](ngx_toastr__WEBPACK_IMPORTED_MODULE_4__["ToastrService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormBuilder"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_socketio_service__WEBPACK_IMPORTED_MODULE_5__["SocketioService"])); };
 LoginComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: LoginComponent, selectors: [["app-login"]], decls: 20, vars: 2, consts: [[1, "login-page"], [1, "login-form"], [1, "mat-typography"], [3, "formGroup"], [1, "field-full-width"], ["matInput", "", "placeholder", "User Name*", "formControlName", "userName"], ["userName", ""], ["matInput", "", "type", "password", "matInput", "", "placeholder", "Password*", "formControlName", "password"], ["password", ""], ["type", "submit", "mat-raised-button", "", 1, "btn", "btn-secondary", 3, "disabled", "click"], ["mat-raised-button", "", 1, "btn", "btn-secondary", 3, "click"]], template: function LoginComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "br");
@@ -1683,15 +1696,15 @@ LoginComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCom
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("formGroup", ctx.createLoginForm);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](7);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", ctx.createLoginForm.pristine || ctx.createLoginForm.invalid);
-    } }, directives: [_angular_material_card__WEBPACK_IMPORTED_MODULE_5__["MatCard"], _angular_material_divider__WEBPACK_IMPORTED_MODULE_6__["MatDivider"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["ɵangular_packages_forms_forms_y"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatusGroup"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroupDirective"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_7__["MatFormField"], _angular_material_input__WEBPACK_IMPORTED_MODULE_8__["MatInput"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["DefaultValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControlName"]], styles: [".login-page[_ngcontent-%COMP%]{\r\n    font-size:0.8rem;\r\n}\r\n.field-full-width[_ngcontent-%COMP%]{\r\n    width: 100%;\r\n}\r\n.login-form[_ngcontent-%COMP%]{\r\n    min-width: 150px;\r\n    width: 48%;\r\n    margin: auto;\r\n    background: #F2F5F8;\r\n  }\r\n@media only screen and (max-width: 600px) {\r\n    .login-form[_ngcontent-%COMP%]{\r\n        width: 98%;\r\n    }\r\n }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbG9naW4vbG9naW4uY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdCQUFnQjtBQUNwQjtBQUNBO0lBQ0ksV0FBVztBQUNmO0FBQ0E7SUFDSSxnQkFBZ0I7SUFDaEIsVUFBVTtJQUNWLFlBQVk7SUFDWixtQkFBbUI7RUFDckI7QUFDQTtJQUNFO1FBQ0ksVUFBVTtJQUNkO0NBQ0giLCJmaWxlIjoic3JjL2FwcC9sb2dpbi9sb2dpbi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmxvZ2luLXBhZ2V7XHJcbiAgICBmb250LXNpemU6MC44cmVtO1xyXG59XHJcbi5maWVsZC1mdWxsLXdpZHRoe1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcbn1cclxuLmxvZ2luLWZvcm17XHJcbiAgICBtaW4td2lkdGg6IDE1MHB4O1xyXG4gICAgd2lkdGg6IDQ4JTtcclxuICAgIG1hcmdpbjogYXV0bztcclxuICAgIGJhY2tncm91bmQ6ICNGMkY1Rjg7XHJcbiAgfVxyXG4gIEBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKG1heC13aWR0aDogNjAwcHgpIHtcclxuICAgIC5sb2dpbi1mb3Jte1xyXG4gICAgICAgIHdpZHRoOiA5OCU7XHJcbiAgICB9XHJcbiB9ICAgIl19 */"] });
+    } }, directives: [_angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCard"], _angular_material_divider__WEBPACK_IMPORTED_MODULE_7__["MatDivider"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["ɵangular_packages_forms_forms_y"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatusGroup"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroupDirective"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_8__["MatFormField"], _angular_material_input__WEBPACK_IMPORTED_MODULE_9__["MatInput"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["DefaultValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControlName"]], styles: [".login-page[_ngcontent-%COMP%]{\r\n    font-size:0.8rem;\r\n}\r\n.field-full-width[_ngcontent-%COMP%]{\r\n    width: 100%;\r\n}\r\n.login-form[_ngcontent-%COMP%]{\r\n    min-width: 150px;\r\n    width: 48%;\r\n    margin: auto;\r\n    background: #F2F5F8;\r\n  }\r\n@media only screen and (max-width: 600px) {\r\n    .login-form[_ngcontent-%COMP%]{\r\n        width: 98%;\r\n    }\r\n }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbG9naW4vbG9naW4uY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdCQUFnQjtBQUNwQjtBQUNBO0lBQ0ksV0FBVztBQUNmO0FBQ0E7SUFDSSxnQkFBZ0I7SUFDaEIsVUFBVTtJQUNWLFlBQVk7SUFDWixtQkFBbUI7RUFDckI7QUFDQTtJQUNFO1FBQ0ksVUFBVTtJQUNkO0NBQ0giLCJmaWxlIjoic3JjL2FwcC9sb2dpbi9sb2dpbi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmxvZ2luLXBhZ2V7XHJcbiAgICBmb250LXNpemU6MC44cmVtO1xyXG59XHJcbi5maWVsZC1mdWxsLXdpZHRoe1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcbn1cclxuLmxvZ2luLWZvcm17XHJcbiAgICBtaW4td2lkdGg6IDE1MHB4O1xyXG4gICAgd2lkdGg6IDQ4JTtcclxuICAgIG1hcmdpbjogYXV0bztcclxuICAgIGJhY2tncm91bmQ6ICNGMkY1Rjg7XHJcbiAgfVxyXG4gIEBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKG1heC13aWR0aDogNjAwcHgpIHtcclxuICAgIC5sb2dpbi1mb3Jte1xyXG4gICAgICAgIHdpZHRoOiA5OCU7XHJcbiAgICB9XHJcbiB9ICAgIl19 */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](LoginComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"],
         args: [{
                 selector: 'app-login',
                 templateUrl: './login.component.html',
-                styleUrls: ['./login.component.css']
+                styleUrls: ['./login.component.css'],
             }]
-    }], function () { return [{ type: _app_service__WEBPACK_IMPORTED_MODULE_2__["AppService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"] }, { type: ngx_toastr__WEBPACK_IMPORTED_MODULE_4__["ToastrService"] }, { type: _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormBuilder"] }]; }, null); })();
+    }], function () { return [{ type: _app_service__WEBPACK_IMPORTED_MODULE_2__["AppService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"] }, { type: ngx_toastr__WEBPACK_IMPORTED_MODULE_4__["ToastrService"] }, { type: _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormBuilder"] }, { type: _socketio_service__WEBPACK_IMPORTED_MODULE_5__["SocketioService"] }]; }, null); })();
 
 
 /***/ }),
@@ -2151,10 +2164,12 @@ class SocketioService {
         this.toastr = toastr;
         this.router = router;
         this.appService = appService;
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(src_environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].SOCKET_ENDPOINT);
     }
     setupSocketConnection(data) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(src_environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].SOCKET_ENDPOINT);
+        //console.log(this.socket);
         this.socket.on('notification', (data) => {
+            //console.log(data);
             //get issue by issueId
             this.appService.getIssueById(data.issueId).subscribe((res) => {
                 //console.log('res',res);
@@ -2197,7 +2212,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    //SOCKET_ENDPOINT: 'http://localhost:3000',
+    // SOCKET_ENDPOINT: 'http://localhost:3000',
     SOCKET_ENDPOINT: 'http://52.66.252.216:3000'
 };
 /*

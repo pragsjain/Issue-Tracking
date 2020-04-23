@@ -4,9 +4,9 @@
     <a class="navbar-brand" href="/">Issue Tracking App</a> 
   </div>
   <div>
-    <span class="material-icons" [hidden]="!fullName">face </span> <span class="user" [hidden]="!fullName">Hey, {{fullName}}</span>
-    <span class="material-icons">notifications </span>
-    <button mat-raised-button class="btn btn-secondary" (click)="logout()">Logout</button>
+    <span class="material-icons" [hidden]="!fullName">face </span> <span class="user" [hidden]="!fullName">Hey, {{fullName}}</span>&nbsp;
+    <!-- <span class="material-icons" [hidden]="!fullName">notifications </span> -->
+    <button mat-raised-button class="btn btn-secondary" (click)="logout()" [hidden]="!fullName">Logout</button>
   </div>
 </nav>
 <router-outlet></router-outlet>

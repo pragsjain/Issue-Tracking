@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AppService } from './app.service';
 import { Router } from '@angular/router';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute} from '@angular/router';
 import { SocketioService } from './socketio.service';
 
 @Component({
@@ -17,16 +17,17 @@ export class AppComponent {
   isRegister:boolean;
   
   constructor(private appService: AppService,
-     private socketService:SocketioService,
      private router: Router,
-     private route: ActivatedRoute){
+     private route: ActivatedRoute,
+     private socketService: SocketioService){
   }
  ngOnInit(){
-   //socket connection
-  this.socketService.setupSocketConnection({data:'hi wassup !'});
+   
     //if user is present in localstorage, get from there or else initialize 
     if(this.appService.getUserInfoFromLocalstorage()){
       this.appService.fullNameSource.next(this.appService.getUserInfoFromLocalstorage().fullName);
+      //socket connection
+       this.socketService.setupSocketConnection({data:'used logged in ,socket established!'});
     }
     this.appService.fullName.subscribe(result => {
       this.fullName = result; 

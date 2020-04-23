@@ -11,12 +11,14 @@ import { AppService } from './app.service';
 export class SocketioService {
 
   socket;
-  constructor(private toastr: ToastrService,private router:Router,private appService: AppService) { }
+  constructor(private toastr: ToastrService,private router:Router,private appService: AppService) {
+    this.socket = io(environment.SOCKET_ENDPOINT);
+  }
   
   setupSocketConnection(data) {
-    this.socket = io(environment.SOCKET_ENDPOINT);
-    
+    //console.log(this.socket);
     this.socket.on('notification', (data)=>{
+      //console.log(data);
           //get issue by issueId
           this.appService.getIssueById(data.issueId).subscribe( (res) =>{
             //console.log('res',res);
@@ -31,6 +33,5 @@ export class SocketioService {
               }
           });
     })
-
   }
 }
