@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +11,26 @@ import { environment } from 'src/environments/environment';
 export class SocketioService {
 
   socket;
-  constructor() { }
+  constructor(private toastr: ToastrService,private router:Router,private appService: AppService) { }
   
-  setupSocketConnection() {
+  setupSocketConnection(data) {
     this.socket = io(environment.SOCKET_ENDPOINT);
-    this.socket.emit('my message', 'Hello there from Angular.');
-    console.log('socket started');
+    
+    this.socket.on('notification', (data)=>{
+          //get issue by issueId
+          this.appService.getIssueById(data.issueId).subscribe( (res) =>{
+            //console.log('res',res);
+              if(!res.error){
+                let fullName=this.appService.getUserInfoFromLocalstorage().fullName;
+                if(res.data.assignee==fullName || res.data.reporter || res.data.watchers.indexOf(fullName)>-1)
+                {
+                //console.log('notify eligible');
+                 this.toastr.info(data.message)
+                .onTap.subscribe(()=>this.router.navigate(['/issueDescription',data.issueId]));
+                }
+              }
+          });
+    })
 
-    this.socket.emit('connect', {data: 'data'});
-        this.socket.on('news', (data)=>{
-        console.log(data);
-       this.socket.emit('my other event', { my: 'data' });
-    });
   }
 }

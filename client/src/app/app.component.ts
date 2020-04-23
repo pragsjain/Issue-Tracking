@@ -12,7 +12,7 @@ import { SocketioService } from './socketio.service';
 export class AppComponent {
   title = 'client';
   isUser:boolean=true;
-  userName;
+  fullName='';
   isLogin:boolean;
   isRegister:boolean;
   
@@ -23,17 +23,16 @@ export class AppComponent {
   }
  ngOnInit(){
    //socket connection
-   this.socketService.setupSocketConnection();
+  this.socketService.setupSocketConnection({data:'hi wassup !'});
+    //if user is present in localstorage, get from there or else initialize 
+    if(this.appService.getUserInfoFromLocalstorage()){
+      this.appService.fullNameSource.next(this.appService.getUserInfoFromLocalstorage().fullName);
+    }
+    this.appService.fullName.subscribe(result => {
+      this.fullName = result; 
+    });
+    
 
-    this.appService.username.subscribe(result => {
-    this.userName = result; 
-  
-    //   console.log(this.router);
-    //   console.log(this.route);
-    //  //this.isLogin= event['url'] =='/login'?true:false
-    //  //this.isRegister= event['url'] =='/register'?true:false
-     });
-    //console.log(this.isLogin,this.isRegister)
  }
 
  logout(){
@@ -41,9 +40,13 @@ export class AppComponent {
   this.appService.logout(userId).subscribe( (res) =>{
     console.log(res);
   })
-  this.appService.usernameSource.next('');
+  this.appService.fullNameSource.next('');
   this.appService.setUserInfoInLocalStorage('')
   this.appService.setTokenInLocalStorage('')
   this.router.navigate(['/login']);
  }
+
+ toasterClickedHandler() {
+  console.log('Toastr clicked');
+}
 }

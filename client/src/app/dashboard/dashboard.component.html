@@ -1,16 +1,18 @@
 
 
-    <div *ngIf="!isIssue" class="noIssue">
+    <div [hidden]="isIssue" class="noIssue">
     No Issue Found
     <button type="button" class="btn btn-secondary center" (click)="create()">Create an Issue</button>
   </div>
-  <div class="dashboardPage" *ngIf="isIssue">
+  <div class="dashboardPage" [hidden]="!isIssue">
     <br>
     <mat-form-field >
         <mat-label><span class="material-icons">search </span> </mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Done">
     </mat-form-field>
-    <button type="button" class="btn btn-secondary float-r" (click)="create()">Create an Issue</button>
+    <button type="button" class="btn btn-secondary btn-right" (click)="goToSearch()" [hidden]=!isDashBoardView>Search</button>
+    <button type="button" class="btn btn-secondary btn-right" (click)="goToDashboard()" [hidden]=isDashBoardView>Dashboard</button>
+    <button type="button" class="btn btn-secondary btn-right" (click)="create()">Create an Issue</button>
 
     <table mat-table [dataSource]="dataSource"  matSort >
   

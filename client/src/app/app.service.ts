@@ -34,8 +34,8 @@ export class AppService {
     localStorage.setItem('token', JSON.stringify(data));
   }
 
-  usernameSource = new BehaviorSubject<string>('');
-  username = this.usernameSource.asObservable()
+  fullNameSource = new BehaviorSubject<string>('');
+  fullName = this.fullNameSource.asObservable()
 
 
   signupFunction(formdata): Observable<any> {
@@ -79,7 +79,6 @@ export class AppService {
   } 
     
   editIssue(data): Observable<any> {
-    console.log(data);
     return this.http.put(`${this.url}/api/v1/issues/${data['issueId']}/edit`, data);
   } 
 

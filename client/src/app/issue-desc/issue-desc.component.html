@@ -6,7 +6,7 @@
       <form [formGroup]="createForm" >
       <section class="mat-typography">      
         <div class="flex-space-between">
-          <h3 *ngIf="!issueId">Create a new Issue</h3> 
+          <h3 *ngIf="!issueId">Create a new Issue({{reporterFullName}})</h3> 
           <h3 *ngIf="issueId">Edit Issue</h3> 
             <div>
               <button mat-raised-button class="btn btn-secondary" (click)="addWatcher()" *ngIf="!isWatcher && issueId">
@@ -52,23 +52,21 @@
         <mat-form-field class="field-full-width">
             <mat-label>Assignee*</mat-label>
             <mat-select formControlName="assignee">
-                <mat-option *ngFor="let user of userList" [value]="user.userName">
-                  {{user.firstName}} {{user.lastName}}<i> ({{user.userName}})</i></mat-option>
+                <mat-option *ngFor="let user of userList" [value]="user.fullName">
+             {{user.fullName}}</mat-option>
               </mat-select>
         </mat-form-field>
+       
         <mat-form-field class="field-full-width">
-            <mat-label>Reporter*</mat-label>
-            <mat-select formControlName="reporter">
-                <mat-option *ngFor="let user of userList" [value]="user.userName">
-                    {{user.firstName}} {{user.lastName}}<i> ({{user.userName}})</i></mat-option>
-            </mat-select>
+          <mat-label>Reporter*</mat-label>
+          <input matInput formControlName="reporter" readonly>
         </mat-form-field>
-        <!-- <mat-form-field class="field-full-width">
-          <input matInput placeholder ="Assignee*" formControlName="assignee" #assignee> 
-        </mat-form-field>
-        <mat-form-field class="field-full-width">
-          <input matInput placeholder ="Reporter*" formControlName="reporter" #reporter>
-        </mat-form-field> -->
+
+        <span *ngIf="this.issue?.watchers.length>0"> Watcher(s) :</span>&nbsp;
+          <span *ngFor="let element of this.issue?.watchers;let lastItem = last;"> 
+            <span class="descValue-class">{{element}} <span *ngIf="!lastItem">,</span></span>
+          </span>
+         <br>
           <input 
           style="display:none"
           type="file"
@@ -77,12 +75,11 @@
           >
           <button type="button" mat-raised-button class="btn btn-primary" (click)="fileInput.click()" *ngIf='issueId'>
               <i class="material-icons">attach_file </i>Attach and Upload</button>
-          <br>
           <div *ngIf="this.filesArray">  
-            <ul *ngFor="let element of this.filesArray; let i = index">
+            <span *ngFor="let element of this.filesArray; let lastItem = last;">
               <li><a href="{{element.url}}" target="_blank">{{element.file}}</a> &nbsp;
                 <i class="material-icons close-class" (click)="removeFile(element.fileId)">cancel </i></li>
-            </ul>
+            </span>
           </div>
           
       </form>
@@ -114,14 +111,19 @@
       </span>
       <h4>{{issue?.title}}</h4>
       <div [innerHTML]="issue?.description"></div>
-      <p>Assignee :<span class="descValue-class"> {{issue?.assigneeFullName}}</span></p>
-      <p>Reporter :<span class="descValue-class"> {{issue?.resporterFullName}}</span></p>
+      <p>Assignee :<span class="descValue-class"> {{issue?.assignee}}</span></p>
+      <p>Reporter :<span class="descValue-class"> {{issue?.reporter}}</span></p>
       <p>Status : <span class="descValue-class"> {{issue?.status}}</span></p>
+      <span *ngIf="this.issue?.watchers.length>0"> Watcher(s) :</span>&nbsp;
+      <span *ngFor="let element of this.issue?.watchers; let lastItem = last;"> 
+        <span class="descValue-class">{{element}} <span *ngIf="!lastItem">,&nbsp;</span></span>
+      </span>
+      <br>
       <div *ngIf="this.filesArray?.length>0">  
-        <p>Attachments :</p>
-          <ul *ngFor="let element of this.filesArray; let i = index">
-            <li><a href="{{element.url}}" target="_blank">{{element.file}}</a> &nbsp;
-          </ul>
+        <span>Attachments : &nbsp;</span>
+          <span *ngFor="let element of this.filesArray; let lastItem = last;">
+            <span><a href="{{element.url}}" target="_blank">{{element.file}}</a> <span *ngIf="!lastItem">,&nbsp;</span></span>
+          </span>
       </div>
       <br>
     </mat-card>
@@ -148,9 +150,9 @@
       <ul>
         <li class="clearfix" *ngFor="let comment of comments">
           <div class="message-data">
-            <span class="message-data-name floatLeft" *ngIf="comment.userName != user?.userName">
+            <span class="message-data-name floatLeft" *ngIf="comment.userFullName != user?.fullName">
                {{ comment?.userFullName }}</span>
-            <span class="message-data-name" *ngIf="comment.userName == user?.userName">{{ comment?.userFullName }}</span>
+            <span class="message-data-name" *ngIf="comment.userFullName == user?.fullName">{{ comment?.userFullName }}</span>
           </div>
           <div class="message my-message" >
             {{comment?.message}}

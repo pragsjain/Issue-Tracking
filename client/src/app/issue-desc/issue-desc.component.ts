@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { AppService } from '../app.service';
 import { Router,ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { SocketioService } from '../socketio.service';
 
 @Component({
   selector: 'app-issue-desc',
@@ -26,31 +27,33 @@ export class IssueDescComponent implements OnInit {
   user;
   comments;
   noIssueDetail;
+  reporterFullName='';
+  fieldsChanged=[];
 
   @ViewChild('scrollMe', { read: ElementRef }) 
   scrollMe: ElementRef;
   scrolltop:number = null
 
   constructor(private appService: AppService, private fb: FormBuilder, private router:Router,
-    private route:ActivatedRoute,private toastr: ToastrService,) { 
+    private route:ActivatedRoute,private toastr: ToastrService,private socketService:SocketioService,) { 
    this.resetForm()
   }
   
     ngOnInit(): void {
       this.user=this.appService.getUserInfoFromLocalstorage()
       this.route.params.subscribe(params =>{
-        console.log('params.issueId->',params.issueId);
+        //console.log('params.issueId->',params.issueId);
         if(params.issueId!==''){
           this.issueId=params.issueId;
-    
+          this.isForm=false;
           //get issue by issueId
           this.appService.getIssueById(this.issueId).subscribe( (res) =>{
-            console.log('res',res);
+            //console.log('res',res);
             if(!res.error){
             this.setFormValue(res.data);
             }
             else{
-             //this.toastr.error(res.message)
+             this.toastr.error(res.message)
             }
           },(error)=>{
             console.log('error',error);
@@ -60,20 +63,13 @@ export class IssueDescComponent implements OnInit {
 
       //get all users
       this.appService.getAllUsers().subscribe( (res) =>{
-        console.log('res',res);
+        //console.log('res',res);
         if(!res.error){
         this.isUserList=true;
         this.userList=res.data;
-        //set full name of assignee and reporter according to assignee id and reporter id
-          if(this.issueId){
-            this.issue.assigneeFullName= this.getFullName(this.issue.assignee,this.userList)
-            this.issue.resporterFullName= this.getFullName(this.issue.reporter,this.userList)
-            this.isWatcher=this.issue.watchers.indexOf(this.user.userName)==-1?false:true;
-          }
         }
         else{
-          //console.log(res.message);
-          //this.toastr.error(res.message)
+          this.toastr.error(res.message)
           }
         },(error)=>{
           console.log('error',error);
@@ -86,36 +82,33 @@ export class IssueDescComponent implements OnInit {
       //get all Files
       this.getFilebyIssueId(this.issueId);
       }
-
+  
   }
 
-
   resetForm(){
+    //create form initially reporter will be user
+    this.appService.fullName.subscribe(val=>
+      this.reporterFullName= val );
     this.createForm = this.fb.group({
      issueId:[''],
      title:['',Validators.required],
      description:[''],
      status:['',Validators.required],
      assignee:['',Validators.required],
-     reporter:['',Validators.required],
+     reporter:[this.reporterFullName,Validators.required],
      watchers:[[]],
      created:[this.date],
     })
+   
     this.commentForm = this.fb.group({
       comment:['',Validators.required]
     })
    }
 
-   getFullName(userName,userList){
-    let user= userList.filter(function (el) {
-      return el.userName == userName
-    })['0'];
-    return `${user.firstName} ${user.lastName} (${user.userName})`;
-   }
-
+   //set form according to response if issue id is not null
    setFormValue(res){
     this.issue=res;
-    console.log('this.filesArray->',this.filesArray);
+    //console.log('this.filesArray->',this.filesArray);
       this.createForm.get('title').setValue(this.issue.title);
       this.createForm.get('description').setValue(this.issue.description);
       this.createForm.get('status').setValue(this.issue.status);
@@ -127,10 +120,12 @@ export class IssueDescComponent implements OnInit {
       }else{
         this.createForm.get('created').setValue(this.issue.created);
       }
+      this.isWatcher=this.issue.watchers.indexOf(this.user.fullName)==-1?false:true;
+      this.onFormChanges()
    }
 
    createFormData(){
-    console.log(this.createForm.value)
+    //console.log('saved form value->',this.createForm.value)
      let issue=this.createForm.value;
      var formData = {};
       if(this.issueId)
@@ -149,23 +144,27 @@ export class IssueDescComponent implements OnInit {
     let formData = this.createFormData();
     if(this.issueId==''){
       this.appService.createIssue(formData).subscribe((res)=>{
-        console.log(res);
+        //console.log(res);
         this.router.navigate(['/dashboard']);
       })
     }else{
-      this.editIssue(formData)
+      this.editIssue(formData);
+      //Send Notification
+      var notificationMessage =`${this.user.fullName} has edited following fields in Issue Id: ${this.issueId}-`
+      this.fieldsChanged.forEach(el=>{
+        notificationMessage=notificationMessage+' ' +el+',';
+      })
+      notificationMessage=notificationMessage.substring(0,notificationMessage.length-1)
+      this.sendNotification(notificationMessage)
     }
   }
 
   editIssue(formData){
-    console.log(formData);
+    //console.log(formData);
     this.appService.editIssue(formData).subscribe((res)=>{
-      console.log(res);
+      //console.log(res);
       this.issue=res.data;
-      //set full name of assignee and reporter according to assignee id and reporter id
-      this.issue.assigneeFullName= this.getFullName(res.data.assignee,this.userList)
-      this.issue.resporterFullName= this.getFullName(res.data.reporter,this.userList)
-      this.isWatcher=this.issue.watchers.indexOf(this.user.userName)==-1?false:true;
+      this.isWatcher=this.issue.watchers.indexOf(this.user.fullName)==-1?false:true;
     })
   }
 
@@ -175,7 +174,7 @@ export class IssueDescComponent implements OnInit {
     let element=<File>event.target.files[0]
     formData.append('issueId',this.issueId);
     formData.append('userName',this.user.userName);
-    formData.append('userFullName',this.user.firstName+" "+this.user.lastName);
+    formData.append('userFullName',this.user.fullName);
     formData.append('url',"");
     formData.append('file',element, element.name);
     this.appService.createFile(formData).subscribe((res)=>{
@@ -187,53 +186,63 @@ export class IssueDescComponent implements OnInit {
         console.log(res.message);
       }
     });
+    //Send Notification
+    var notificationMessage =`${this.user.fullName} has added files in Issue Id: ${this.issueId}-`
+    
+    this.sendNotification(notificationMessage)
   }
   
   removeFile(fileId){
     this.isForm=false;
     this.appService.deleteFile(fileId).subscribe((res)=>{
       if(!res.error){
-        console.log(res.message);
+        //console.log(res.message);
         this.getFilebyIssueId(this.issueId);
       }
       else{
         console.log(res.message);
       }
     })
+    //Send Notification
+    var notificationMessage =`${this.user.fullName} has removed files in Issue Id: ${this.issueId}-`
+    
+    this.sendNotification(notificationMessage)
   }
 
   addWatcher(){
     var formData = {};
-    console.log(this.issue.watchers);
-    if(this.issue.watchers.indexOf(this.user.userName)==-1){
-    this.issue.watchers.push(this.user.userName);
-    console.log('watchers->',this.issue.watchers);
+    if(this.issue.watchers.indexOf(this.user.fullName)==-1){
+    this.issue.watchers.push(this.user.fullName);
     formData['watchers']=this.issue.watchers;
     formData['issueId']=this.issue.issueId;
     this.editIssue(formData);
     }
+    var notificationMessage =`${this.user.fullName} is watching Issue Id: ${this.issueId}-`
+    
+    this.sendNotification(notificationMessage)
    }
 
    removeWatcher(){
     var formData = {};
-    let userName= this.user.userName;
-    var filtered = this.issue.watchers.filter(function(value){ return value !== userName});
-    console.log('watchers->',filtered)
+    let fullName= this.user.fullName;
+    var filtered = this.issue.watchers.filter(function(value){ return value !== fullName});
     formData['watchers']=filtered;
     formData['issueId']=this.issue.issueId;
-    console.log(formData);
     this.editIssue(formData);
+    var notificationMessage =`${this.user.fullName} is no longer watching Issue Id: ${this.issueId}-`
+    
+    this.sendNotification(notificationMessage)
    }
 
    sendComment(){
     var formData={}
     formData['issueId']=this.issue.issueId;
     formData['userName']=this.user.userName;
-    formData['userFullName']=this.user.firstName+" "+this.user.lastName;
+    formData['userFullName']=this.user.fullName;
     formData['message']=this.commentForm.value.comment;
 
     this.appService.createComment(formData).subscribe((res)=>{
-      console.log(res);
+      //console.log(res);
       if(!res.error)
       this.getCommentbyIssueId(this.issueId);
       else{
@@ -245,6 +254,9 @@ export class IssueDescComponent implements OnInit {
       this.commentForm = this.fb.group({
         comment:['',Validators.required]
       })
+      var notificationMessage =`${this.user.fullName} has commented on Issue Id: ${this.issueId}-`
+      this.sendNotification(notificationMessage)
+      
   }
 
 getCommentbyIssueId(issueId){
@@ -274,4 +286,37 @@ getFilebyIssueId(issueId){
   })
 }
 
+  //to notify what user has changed
+  onFormChanges(): void {
+    //console.log('onChanges');
+    this.createForm.get('title').valueChanges.subscribe(val => {
+      if(this.fieldsChanged.indexOf('Title')==-1)
+      this.fieldsChanged.push('Title');
+    });
+    this.createForm.get('description').valueChanges.subscribe(val => {
+      if(this.fieldsChanged.indexOf('Description')==-1)
+      this.fieldsChanged.push('Description');
+    });
+    this.createForm.get('status').valueChanges.subscribe(val => {
+      if(this.fieldsChanged.indexOf('Status')==-1)
+      this.fieldsChanged.push('Status');
+    });
+    this.createForm.get('assignee').valueChanges.subscribe(val => {
+      if(this.fieldsChanged.indexOf('Assignee')==-1)
+      this.fieldsChanged.push('Assignee');
+    });
+    this.createForm.get('watchers').valueChanges.subscribe(val => {
+      if(this.fieldsChanged.indexOf('Watchers')==-1)
+      this.fieldsChanged.push('Watchers');
+    }); 
+    
+  }
+
+  sendNotification(notificationMessage){
+    let notification={}
+    notification['message']=notificationMessage;
+    notification['userFullName']=this.user.fullName;
+    notification['issueId']=this.issueId;
+    this.socketService.socket.emit('sendnotification', notification);
+  }
 }

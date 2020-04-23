@@ -7,16 +7,16 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  selector: 'app-search',
+  templateUrl: '../dashboard/dashboard.component.html',
+  styleUrls: ['../dashboard/dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class SearchComponent implements OnInit {
   displayedColumns: string[] = ['status', 'title', 'reporter', 'date','delete'];
   ELEMENT_DATA: IssueElement[];
   dataSource: MatTableDataSource<IssueElement>
   isIssue:boolean=false;
-  isDashBoardView=true;
+  isDashBoardView=false;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -93,7 +93,6 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }  
 }
-
 
 
 export interface IssueElement {

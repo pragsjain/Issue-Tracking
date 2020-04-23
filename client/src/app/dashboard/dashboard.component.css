@@ -11,8 +11,9 @@ th.mat-sort-header-sorted {
 .mat-row:hover {
   background-color:#F2F5F8;
 }
-.float-r{
-  float:right
+.btn-right{
+  float:right;
+  margin-right: 5px;
 }
 .center{
   margin: auto;

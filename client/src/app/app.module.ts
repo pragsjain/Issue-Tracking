@@ -21,6 +21,7 @@ import { IssueDescComponent } from './issue-desc/issue-desc.component';
 import { HttpClientModule } from '@angular/common/http';
 import { QuillModule } from 'ngx-quill'
 import { SocketioService } from './socketio.service';
+import { SearchComponent } from './search/search.component';
 
 
 const appRoutes: Routes = [
@@ -29,6 +30,10 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent
+  },
+  {
+    path: 'search',
+    component: SearchComponent
   },
   {
     path: 'issueDescription/:issueId',
@@ -67,7 +72,8 @@ const toolbar= [
     LoginComponent,
     RegisterComponent,
     DashboardComponent,
-    IssueDescComponent
+    IssueDescComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

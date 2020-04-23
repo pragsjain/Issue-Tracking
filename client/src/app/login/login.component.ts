@@ -24,7 +24,9 @@ export class LoginComponent implements OnInit {
   
   ngOnInit() {
     this.resetForm();
-    this.appService.usernameSource.next('');
+    this.appService.setUserInfoInLocalStorage('')
+    this.appService.setTokenInLocalStorage('')
+    this.appService.fullNameSource.next('');
   }
 
   resetForm(){
@@ -50,13 +52,13 @@ export class LoginComponent implements OnInit {
             console.log(apiResponse)
              this.appService.setUserInfoInLocalStorage(apiResponse.data.userDetails)
              this.appService.setTokenInLocalStorage(apiResponse.data.token)
-             this.appService.usernameSource.next(apiResponse.data.userDetails.userName);
+             this.appService.fullNameSource.next(apiResponse.data.userDetails.fullName);
              this.router.navigate(['/dashboard']);
           } else {
             this.toastr.error(apiResponse.message)
           }
         }, (err) => {
-          this.toastr.error('some error occured')
+          this.toastr.error(err.error.message)
         });
     } // end signinFunction
 
