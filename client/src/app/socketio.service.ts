@@ -12,7 +12,7 @@ export class SocketioService {
 
   socket;
   constructor(private toastr: ToastrService,private router:Router,private appService: AppService) {
-    //this.socket = io(environment.SOCKET_ENDPOINT);
+    this.socket = io(environment.SOCKET_ENDPOINT);
   }
   
   setupSocketConnection(data) {
@@ -21,7 +21,7 @@ export class SocketioService {
       //console.log(data);
           //get issue by issueId
           this.appService.getIssueById(data.issueId).subscribe( (res) =>{
-            //console.log('res',res);
+            console.log('res',res);
               if(!res.error){
                 let fullName=this.appService.getUserInfoFromLocalstorage().fullName;
                 if(res.data.assignee==fullName || res.data.reporter || res.data.watchers.indexOf(fullName)>-1)

@@ -4105,19 +4105,37 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var ngx_toastr__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    var socket_io_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! socket.io-client */
+    "./node_modules/socket.io-client/lib/index.js");
+    /* harmony import */
+
+
+    var socket_io_client__WEBPACK_IMPORTED_MODULE_1___default =
+    /*#__PURE__*/
+    __webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_1__);
+    /* harmony import */
+
+
+    var src_environments_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! src/environments/environment */
+    "./src/environments/environment.ts");
+    /* harmony import */
+
+
+    var ngx_toastr__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ngx-toastr */
     "./node_modules/ngx-toastr/__ivy_ngcc__/fesm2015/ngx-toastr.js");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
     /* harmony import */
 
 
-    var _app_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _app_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
     /*! ./app.service */
     "./src/app/app.service.ts");
 
@@ -4129,7 +4147,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
         this.toastr = toastr;
         this.router = router;
-        this.appService = appService; //this.socket = io(environment.SOCKET_ENDPOINT);
+        this.appService = appService;
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(src_environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].SOCKET_ENDPOINT);
       }
 
       _createClass(SocketioService, [{
@@ -4142,7 +4161,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             //console.log(data);
             //get issue by issueId
             _this22.appService.getIssueById(data.issueId).subscribe(function (res) {
-              //console.log('res',res);
+              console.log('res', res);
+
               if (!res.error) {
                 var fullName = _this22.appService.getUserInfoFromLocalstorage().fullName;
 
@@ -4162,7 +4182,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }();
 
     SocketioService.ɵfac = function SocketioService_Factory(t) {
-      return new (t || SocketioService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](ngx_toastr__WEBPACK_IMPORTED_MODULE_1__["ToastrService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_app_service__WEBPACK_IMPORTED_MODULE_3__["AppService"]));
+      return new (t || SocketioService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](ngx_toastr__WEBPACK_IMPORTED_MODULE_3__["ToastrService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_app_service__WEBPACK_IMPORTED_MODULE_5__["AppService"]));
     };
 
     SocketioService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
@@ -4180,11 +4200,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }]
       }], function () {
         return [{
-          type: ngx_toastr__WEBPACK_IMPORTED_MODULE_1__["ToastrService"]
+          type: ngx_toastr__WEBPACK_IMPORTED_MODULE_3__["ToastrService"]
         }, {
-          type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+          type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"]
         }, {
-          type: _app_service__WEBPACK_IMPORTED_MODULE_3__["AppService"]
+          type: _app_service__WEBPACK_IMPORTED_MODULE_5__["AppService"]
         }];
       }, null);
     })();
@@ -4294,6 +4314,21 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     module.exports = __webpack_require__(
     /*! C:\Users\pragatidugar\Desktop\ed-project-1\project\client\src\main.ts */
     "./src/main.ts");
+    /***/
+  },
+
+  /***/
+  1:
+  /*!********************!*\
+    !*** ws (ignored) ***!
+    \********************/
+
+  /*! no static exports found */
+
+  /***/
+  function _(module, exports) {
+    /* (ignored) */
+
     /***/
   }
 }, [[0, "runtime", "vendor"]]]);

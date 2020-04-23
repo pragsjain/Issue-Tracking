@@ -483,7 +483,7 @@ if (content.locals) {
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /*!*************************************************************************************************************************************************************************************************************************************!*\
   !*** multi ./node_modules/@angular/material/prebuilt-themes/indigo-pink.css ./node_modules/bootstrap/dist/css/bootstrap.css ./node_modules/font-awesome/css/font-awesome.css ./src/styles.css ./node_modules/ngx-toastr/toastr.css ***!
   \*************************************************************************************************************************************************************************************************************************************/
@@ -499,5 +499,5 @@ module.exports = __webpack_require__(/*! C:\Users\pragatidugar\Desktop\ed-projec
 
 /***/ })
 
-},[[3,"runtime"]]]);
+},[[4,"runtime"]]]);
 //# sourceMappingURL=styles-es2015.js.map
