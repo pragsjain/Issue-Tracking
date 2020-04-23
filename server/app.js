@@ -94,14 +94,13 @@ const io = require('socket.io')(server);
     console.log('a user connected');
     socket.on('disconnect', () => {
       console.log('user disconnected');
+      socket.removeAllListeners();
     });
-    socket.on('my message', (msg) => {
-      console.log('message: ' + msg);
-    });
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
+     socket.on('sendnotification', (msg) => {
+       console.log('message: ' + msg.message);
+       socket.broadcast.emit('notification',msg );
+     });
+    
   });
 
 

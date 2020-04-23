@@ -20,6 +20,10 @@ let userSchema = new Schema({
     type: String,
     default: ''
   },
+  fullName: {
+    type: String,
+    default: ''
+  },
   password: {
     type: String,
     default: 'passskdajakdjkadsj'

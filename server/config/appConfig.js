@@ -8,6 +8,7 @@ appConfig.db = {
   }
 appConfig.apiVersion = '/api/v1';
 appConfig.url='http://localhost:3000/';
+//appConfig.url='http://52.66.252.216:3000/';
 
 
 module.exports = {

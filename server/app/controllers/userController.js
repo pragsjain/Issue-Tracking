@@ -62,10 +62,12 @@ let signUpFunction = (req, res) => {
                         reject(apiResponse)
                     } else if (check.isEmpty(retrievedUserDetails)) {
                         console.log(req.body)
+                        let fullName = req.body.firstName+' '+req.body.lastName +' (' +req.body.userName.toLowerCase()+')'
                         let newUser = new UserModel({
                             userId: shortid.generate(),
                             firstName: req.body.firstName,
                             lastName: req.body.lastName || '',
+                            fullName: fullName,
                             userName: req.body.userName.toLowerCase(),
                             password: passwordLib.hashpassword(req.body.password),
                             createdOn: time.now()
@@ -119,11 +121,11 @@ let loginFunction = (req, res) => {
                     if (err) {
                         console.log(err)
                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-                        let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+                        let apiResponse = response.generate(true, 'Failed To Find User.Please Try Again !', 500, null)
                         reject(apiResponse)
                     } else if (check.isEmpty(userDetails)) {
                         logger.error('No User Found', 'userController: findUser()', 7)
-                        let apiResponse = response.generate(true, 'No User Details Found', 404, null)
+                        let apiResponse = response.generate(true, 'Wrong Credentials.Please Try Again !', 404, null)
                         reject(apiResponse)
                     } else {
                         logger.info('User Found', 'userController: findUser()', 10)

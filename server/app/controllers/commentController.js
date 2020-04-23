@@ -76,7 +76,7 @@ let createComment = (req, res) => {
         userFullName: req.body.userFullName,
         message: req.body.message,
     }) // end new Comment model
-    console.log('newComment',newComment);
+    //console.log('newComment',newComment);
     newComment.save((err, result) => {
         if (err) {
             logger.error(err.message, 'commentController: createComment', 10)
