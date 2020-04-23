@@ -12,7 +12,7 @@ export class SocketioService {
 
   socket;
   constructor(private toastr: ToastrService,private router:Router,private appService: AppService) {
-    this.socket = io(environment.SOCKET_ENDPOINT);
+    //this.socket = io(environment.SOCKET_ENDPOINT);
   }
   
   setupSocketConnection(data) {
