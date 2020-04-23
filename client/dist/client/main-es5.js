@@ -3044,7 +3044,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               _this18.toastr.error(apiResponse.message);
             }
           }, function (err) {
-            _this18.toastr.error(err.error.message);
+            if (err.error.message) _this18.toastr.error(err.error.message);else _this18.toastr.error("Some error in Login.Try Again !");
           });
         }; // end signinFunction
 
@@ -4211,7 +4211,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
     var environment = {
       production: false,
-      SOCKET_ENDPOINT: 'http://localhost:3000'
+      //SOCKET_ENDPOINT: 'http://localhost:3000',
+      SOCKET_ENDPOINT: 'http://52.66.252.216:3000'
     };
     /*
      * For easier debugging in development mode, you can import the following file

@@ -58,7 +58,10 @@ export class LoginComponent implements OnInit {
             this.toastr.error(apiResponse.message)
           }
         }, (err) => {
+          if(err.error.message)
           this.toastr.error(err.error.message)
+          else
+          this.toastr.error("Some error in Login.Try Again !")
         });
     } // end signinFunction
 

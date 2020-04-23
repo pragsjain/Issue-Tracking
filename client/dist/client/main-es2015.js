@@ -1624,7 +1624,10 @@ class LoginComponent {
                     this.toastr.error(apiResponse.message);
                 }
             }, (err) => {
-                this.toastr.error(err.error.message);
+                if (err.error.message)
+                    this.toastr.error(err.error.message);
+                else
+                    this.toastr.error("Some error in Login.Try Again !");
             });
         }; // end signinFunction
     }
@@ -2194,7 +2197,8 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    SOCKET_ENDPOINT: 'http://localhost:3000',
+    //SOCKET_ENDPOINT: 'http://localhost:3000',
+    SOCKET_ENDPOINT: 'http://52.66.252.216:3000'
 };
 /*
  * For easier debugging in development mode, you can import the following file
