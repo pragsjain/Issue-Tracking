@@ -18,31 +18,22 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { IssueDescComponent } from './issue-desc/issue-desc.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { QuillModule } from 'ngx-quill'
 import { SocketioService } from './socketio.service';
 import { SearchComponent } from './search/search.component';
-
+import { JwtModule } from '@auth0/angular-jwt'
+import { AuthguardService }from './auth/authguard.service'
+import { AuthService }from './auth/auth.service'
+import { TokenInterceptor } from './auth/token.interceptor';
 
 const appRoutes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  {
-    path: 'dashboard',
-    component: DashboardComponent
-  },
-  {
-    path: 'search',
-    component: SearchComponent
-  },
-  {
-    path: 'issueDescription/:issueId',
-    component: IssueDescComponent,
-  },
-  { path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
-  },
+  { path: 'login', component: LoginComponent},
+  { path: 'register', component: RegisterComponent  },
+  {path: 'dashboard',component: DashboardComponent,canActivate: [AuthguardService]},
+  {path: 'search',component: SearchComponent },
+  {path: 'issueDescription/:issueId',component: IssueDescComponent,},
+  { path: '',redirectTo: '/login',pathMatch: 'full' },
   { path: '**', component: LoginComponent }
 ];
 
@@ -91,9 +82,17 @@ const toolbar= [
       { enableTracing: false } // <-- debugging purposes only
     ),
     BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot() // ToastrModule added
+    ToastrModule.forRoot(), // ToastrModule added
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('token');
+        },
+        whitelistedDomains: ['http://localhost:4200/','http://52.66.252.216:3000']
+      }
+    })
   ],
-  providers: [],
+  providers: [ AuthService,{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

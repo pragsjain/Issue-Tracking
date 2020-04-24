@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.resetForm();
     this.appService.setUserInfoInLocalStorage('')
-    this.appService.setTokenInLocalStorage('')
+    this.appService.setTokenInLocalStorage(null)
     this.appService.fullNameSource.next('');
   }
 

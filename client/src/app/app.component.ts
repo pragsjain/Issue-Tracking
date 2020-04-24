@@ -43,7 +43,7 @@ export class AppComponent {
   })
   this.appService.fullNameSource.next('');
   this.appService.setUserInfoInLocalStorage('')
-  this.appService.setTokenInLocalStorage('')
+  this.appService.setTokenInLocalStorage(null)
   this.router.navigate(['/login']);
  }
 
