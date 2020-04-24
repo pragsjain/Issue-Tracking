@@ -1,5 +1,6 @@
 const userController = require("./../../app/controllers/userController");
 const appConfig = require("./../../config/appConfig")
+const auth =require("./../middlewares/auth")
 
 let setRouter = (app) => {
 
@@ -8,14 +9,22 @@ let setRouter = (app) => {
     // defining routes.
     app.get(baseUrl+'/all',userController.getAllUser);
 
+    app.post(`${baseUrl}/login`, userController.loginFunction);
+
     app.post(`${baseUrl}/signup`, userController.signUpFunction);
 
+    // delete auth token by userId on logout
+    app.post(`${baseUrl}/:userId/delete`,auth.isAuthenticated,userController.logout);
+
+    //to get all auth tokens
+    app.get(baseUrl+'/auth/all',userController.getAllAuth);
+
     /**
-     * @apiGroup users
+     * @apiGroup User
      * @apiVersion  1.0.0
-     * @api {post} /api/v1/users/login api for user login.
+     * @api {post} /api/v1/users/login User Login.
      *
-     * @apiParam {string} email email of the user. (body params) (required)
+     * @apiParam {string} userName userName of the user. (body params) (required)
      * @apiParam {string} password password of the user. (body params) (required)
      *
      * @apiSuccess {object} myResponse shows error status, message, http status code, result.
@@ -26,41 +35,97 @@ let setRouter = (app) => {
             "message": "Login Successful",
             "status": 200,
             "data": {
-                "authToken": "eyJhbGciOiJIUertyuiopojhgfdwertyuVCJ9.MCwiZXhwIjoxNTIwNDI29tIiwibGFzdE5hbWUiE4In19.hAR744xIY9K53JWm1rQ2mc",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RpZCI6InpDSXVRbHEwWiIsImlhdCI6MTU4Nzc0NjU5NDUzMywiZXhwIjoxNTg3ODMyOTk0LCJzdWIiOiJhdXRoVG9rZW4iLCJpc3MiOiJlZENoYXQiLCJkYXRhIjp7InVzZXJOYW1lIjoicHJhZ3MiLCJmdWxsTmFtZSI6IlByYWdhdGkgRHVnYXIgKHByYWdzKSIsImxhc3ROYW1lIjoiRHVnYXIiLCJmaXJzdE5hbWUiOiJQcmFnYXRpIiwidXNlcklkIjoiSkRxandTVy16In19.qE8iYfyelv15chdd-BLsefXX8DpfCijZdqYj3F51d2I",
+                "userId": "JDqjwSW-z",
                 "userDetails": {
-                "userName": "someone",
-                "lastName": "Sengar",
-                "firstName": "Rishabh",
-                "userId": "-E9zxTYA8"
+                "userName": "prags",
+                "fullName": "Pragati Dugar (prags)",
+                "lastName": "Dugar",
+                "firstName": "Pragati",
+                "userId": "JDqjwSW-z"
+                }
             }
-
+        }
+     *
+     * @apiError {object} myError shows error status, message, http status code, result.
+     *    
+     * @apiErrorExample {object} Error-Response:
+        {
+            "error": true,
+            "message": "Wrong Password.Login Failed",
+            "status": 400,
+            "data": null
         }
     */
 
-    // params: email, password.
-    app.post(`${baseUrl}/login`, userController.loginFunction);
+
+     /**
+     * @apiGroup User
+     * @apiVersion  1.0.0
+     * @api {post} /api/v1/users/signup User Sign Up.
+     *
+     * @apiParam {string} createdOn Date of the user creation. (body params) (required)
+     * @apiParam {string} firstName First Name of the user. (body params) (required)
+     * @apiParam {string} lastName Last Name of the user. (body params) 
+     * @apiParam {string} password Password of the user. (body params) (required)
+     * @apiParam {string} userName User Name of the user. (body params) (required)
+     *
+     * @apiSuccess {object} myResponse shows error status, message, http status code, result.
+     * 
+     * @apiSuccessExample {object} Success-Response:
+        {
+            "error": false,
+            "message": "User created",
+            "status": 200,
+            "data": {
+                "__v": 0,
+                "_id": "5ea31ab35291094744d9a09c",
+                "createdOn": "2020-04-24T16:58:27.000Z",
+                "userName": "lisa",
+                "fullName": "lisa anchalia (lisa)",
+                "lastName": "anchalia",
+                "firstName": "lisa",
+                "userId": "6B9PLxgoK"
+            }
+        }
+     *
+     * @apiError {object} myError shows error status, message, http status code, result.
+     *    
+     * @apiErrorExample {object} Error-Response:
+        {
+            "error": true,
+            "message": "User Already Present With this userName",
+            "status": 403,
+            "data": null
+        }
+    */
+         
 
     /**
-     * @apiGroup users
+     * @apiGroup User
      * @apiVersion  1.0.0
-     * @api {post} /api/v1/users/logout to logout user.
+     * @api {post} /api/v1/users/:userId/delete User logout.
      *
-     * @apiParam {string} userId userId of the user. (auth headers) (required)
+     * @apiHeader  {string} Authorization auth-token of the user. (auth headers) (required)
+     * 
+     * @apiHeaderExample  {json} Request-Example:
+         {
+            "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkXVCJ9.eyJqd3RpZCI6Imk2ejAwUkJWcyIsImlhdCI6MTU4Nzc0ODA2MDA3MywiZXhwIjoxNTg3ODM0NDYwLCJzdWIiOiJhdXRoVG9rZW4iLCJpc3MiOiJlZENoYXQiLCJkYXRhIjp7InVzZXJOYW1lIjoibGlzYSIsImZ1bGxOYW1lIjoibGlzYSBhbmNoYWxpYSAobGlzYSkiLCJsYXN0TmFtZSI6ImFuY2hhbGlhIiwiZmlyc3ROYW1lIjoibGlzYSIsInVzZXJJZCI6IjZCOVBMeGdvSyJ9fQ.iqXZDKNfG-kHZLVSPJLJpRWw7IBezEBtbKFrnYyOQPg"
+         }
      *
      * @apiSuccess {object} myResponse shows error status, message, http status code, result.
      * 
      * @apiSuccessExample {object} Success-Response:
          {
             "error": false,
-            "message": "Logged Out Successfully",
+            "message": "Auth is Deleted Successfully",
             "status": 200,
-            "data": null
-
-        }
+            "data": {
+                "n": 1,
+                "ok": 1
+            }
+         }
     */
-
-    // auth token params: userId.
-    app.post(`${baseUrl}/logout`, userController.logout);
 
 }
 

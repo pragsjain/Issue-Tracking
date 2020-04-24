@@ -49,49 +49,6 @@ let viewByIssueId = (req, res) => {
     })
 }
 
-/**
- * function to get issue by status.
- */
-let viewByStatus = (req, res) => {
-
-    IssueModel.find({ 'status': req.params.status }, (err, result) => {
-
-        if (err) {
-            logger.error(err, 'issueController: viewByStatus()', 5)
-            let apiResponse = response.generate(true, 'Failed To Find Issue Details', 500, null)
-            res.send(apiResponse)
-        } else if (result == undefined || result == null || result == '') {
-            logger.error('No Issue Found', 'issueController: viewByStatus()', 5)
-            let apiResponse = response.generate(true, 'No Issue Found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
-            res.send(apiResponse)
-        }
-    })
-}
-
-/**
- * function to get issue by assignee.
- */
-let viewByAssignee = (req, res) => {
-
-    IssueModel.find({ 'assignee': req.params.assignee }, (err, result) => {
-
-        if (err) {
-            logger.error(err, 'issueController: viewByAssignee()', 5)
-            let apiResponse = response.generate(true, 'Failed To Find Issue Details', 500, null)
-            res.send(apiResponse)
-        } else if (result == undefined || result == null || result == '') {
-            logger.error('No Issue Found', 'issueController: viewByAssignee()', 5)
-            let apiResponse = response.generate(true, 'No Issue Found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'All Issue Details Found', 200, result)
-            res.send(apiResponse)
-        }
-    })
-}
 
 /**
  * function to edit issue by admin.
@@ -142,10 +99,7 @@ let deleteIssue = (req, res) => {
 
 let createIssue = (req, res) => {
     let issueId = shortid.generate()
-    console.log('issueId',issueId);
-   // console.log(req.body);
-    // console.log('title',req.body['title']);
-    // console.log('watchers',req.body.watchers);
+    //console.log('issueId',issueId);
     let newIssue = new IssueModel({
         issueId: issueId,
         title: req.body.title,
@@ -176,8 +130,6 @@ module.exports = {
     getAllIssue: getAllIssue,
     createIssue: createIssue,
     viewByIssueId: viewByIssueId,
-    viewByStatus: viewByStatus,
-    viewByAssignee: viewByAssignee,
     editIssue: editIssue,
     deleteIssue: deleteIssue
 }

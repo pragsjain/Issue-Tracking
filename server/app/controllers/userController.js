@@ -9,6 +9,7 @@ const token = require('../libs/tokenLib')
 
 /* Models */
 const UserModel = mongoose.model('User')
+const AuthModel = mongoose.model('Auth')
 
 let getAllUser = (req, res) => {
     UserModel.find()
@@ -30,6 +31,25 @@ let getAllUser = (req, res) => {
         })
 }// end get all Users
 
+let getAllAuth = (req, res) => {
+   AuthModel.find()
+        .select('-__v -_id')
+        .lean() //make it plain javascript object,not mongoose object
+        .exec((err, result) => { //trying to execute this function
+            if (err) {
+                logger.error(err, 'userController: getAllAuth()', 5)
+                let apiResponse = response.generate(true, 'Failed To Find Auth', 500, null)
+                res.send(apiResponse)
+            } else if (result == undefined || result == null || result == '') {
+                logger.error('No Auth Found', 'userController: getAllAuth()', 5)
+                let apiResponse = response.generate(true, 'No Auth Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'All Auth Details Found', 200, result)
+                res.send(apiResponse)
+            }
+        })
+}
 
 // start user signup function 
 
@@ -116,7 +136,7 @@ let loginFunction = (req, res) => {
         return new Promise((resolve, reject) => {
             if (req.body.userName) {
                 console.log("req body userName is there");
-                console.log(req.body);
+                //console.log(req.body);
                 UserModel.findOne({ userName: req.body.userName}, (err, userDetails) => {
                     if (err) {
                         console.log(err)
@@ -181,18 +201,40 @@ let loginFunction = (req, res) => {
             })
         })
     }
+
+    let saveAuthToken =(userDetails) =>{
+        return new Promise((resolve, reject) => {
+        let newAuth = new AuthModel({
+            userId: userDetails.userId,
+            authToken:userDetails.token,
+            tokenSecret: 'IssueTrackingAppSecret',
+            tokenGenerationTime :time.now()
+        })
+        newAuth.save((err, newAuth) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'userController: saveAuthToken', 10)
+            let apiResponse = response.generate(true, 'Failed to create new Auth', 500, null)
+            reject(apiResponse)
+        } else {
+            //console.log(newAuth)
+            resolve(userDetails)
+        }
+        })
+    })
+    }
    
 
     findUser(req,res)
         .then(validatePassword)
         .then(generateToken)
+        .then(saveAuthToken)
         .then((resolve) => {
             let apiResponse = response.generate(false, 'Login Successful', 200, resolve)
             res.status(200)
             res.send(apiResponse)
         })
         .catch((err) => {
-            console.log("errorhandler");
             console.log(err);
             res.status(err.status)
             res.send(err)
@@ -201,23 +243,34 @@ let loginFunction = (req, res) => {
 }
 
 
-// end of the login function 
+
 
 
 let logout = (req, res) => {
-    UserModel.remove({ 'userId': req.params.userId }, (err, result) => {
-        if (err) {
-            logger.error(err, 'userController: logout()', 5)
-            let apiResponse = response.generate(true, 'Failed To Delete User', 500, null)
-            res.send(apiResponse)
-        } else if (result == undefined || result == null || result == '') {
-            logger.error('No User Found', 'userController: logout()', 5)
-            let apiResponse = response.generate(true, 'No User Found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'User is Deleted Successfully', 200, result)
-            res.send(apiResponse)
-        }
+    let AuthRemove =() =>{
+        return new Promise((resolve, reject) => {     
+       AuthModel.remove({ 'userId': req.params.userId }, (err, result) => {
+            if (err) {
+                logger.error(err, 'userController: logout()', 5)
+                let apiResponse = response.generate(true, 'Failed To Delete Auth', 500, null)
+                reject(apiResponse)
+            } else if (result == undefined || result == null || result == '') {
+                logger.error('No Auth Found', 'userController: logout()', 5)
+                let apiResponse = response.generate(true, 'No Auth Found', 404, null)
+                resolve(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'Auth is Deleted Successfully', 200, result)
+                resolve(apiResponse)
+            }
+        })
+     })
+    }
+    AuthRemove(req,res)
+    .then((resolve) => {
+        res.send(resolve)
+    })
+    .catch((err) => {
+        res.send(err)
     })
 
 } // end of the logout function.
@@ -228,6 +281,7 @@ module.exports = {
     signUpFunction: signUpFunction,
     loginFunction: loginFunction,
     logout: logout,
-    getAllUser:getAllUser
+    getAllUser:getAllUser,
+    getAllAuth:getAllAuth
 
 }// end exports

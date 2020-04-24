@@ -7,7 +7,8 @@ const Auth = new Schema({
     type: String
   },
   authToken: {
-    type: String
+    type: String,
+    unique: true
   },
   tokenSecret: {
     type: String
