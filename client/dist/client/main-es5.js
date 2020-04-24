@@ -4482,7 +4482,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (!res.error) {
                 var fullName = _this22.appService.getUserInfoFromLocalstorage().fullName;
 
-                if (res.data.assignee == fullName || res.data.reporter || res.data.watchers.indexOf(fullName) > -1) {
+                if (res.data.assignee == fullName || res.data.reporter == fullName || res.data.watchers.indexOf(fullName) > -1) {
                   //console.log('notify eligible');
                   _this22.toastr.info(data.message).onTap.subscribe(function () {
                     return _this22.router.navigate(['/issueDescription', data.issueId]);
