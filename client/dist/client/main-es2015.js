@@ -2314,7 +2314,7 @@ class SocketioService {
                 if (!res.error) {
                     let fullName = this.appService.getUserInfoFromLocalstorage().fullName;
                     if (res.data.assignee == fullName || res.data.reporter == fullName || res.data.watchers.indexOf(fullName) > -1) {
-                        //console.log('notify eligible');
+                        console.log('notify eligible');
                         this.toastr.info(data.message)
                             .onTap.subscribe(() => this.router.navigate(['/issueDescription', data.issueId]));
                     }
